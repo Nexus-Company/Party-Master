@@ -17,6 +17,8 @@ public class Track
     public string? PreviewUrl { get; set; }
     public string Uri { get; set; }
     public IEnumerable<Artist> Artists { get; set; }
+    [JsonProperty("external_urls")]
+    public IDictionary<string,string> Urls { get; set; }
     public Album Album { get; set; }
 }
 

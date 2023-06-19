@@ -27,35 +27,79 @@
 }
 
     #artists li.artist {
-        width: min-content;
+        width: max-content;
         margin: 0;
         padding: 0;
+        color: var(--bs-tertiary-color);
     }
 
         #artists li.artist:not(:last-child)::after {
             content: ", ";
+            padding-right: 4px;
         }
 
 .player-list {
-    list-style: none;
     display: inline-grid;
     overflow-y: scroll;
     max-height: 35rem;
 }
 
     .player-list .music-list {
-        display: inline;
+        display: inline-flex;
         min-width: 100%;
         padding: .5rem;
+        flex-direction: row;
     }
+
+        .player-list .music-list:hover {
+            cursor: pointer;
+            background: var(--bs-secondary-bg);
+            border-radius: .4rem;
+        }
 
         .player-list .music-list h5 {
             width: fit-content;
             margin: 0;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .player-list .music-list ul.artists {
+            font-size: .65rem;
         }
 
         .player-list .music-list img.banner {
-            width: 3.5rem;
-            height: 3.5rem;
-            margin: .3rem;
+            width: 3rem;
+            height: 3rem;
+            margin: 0 .5rem;
+            border-radius: .2rem;
         }
+
+
+.banner {
+    position: relative;
+    display: inline-block;
+}
+
+    .banner .svg-inline--fa {
+        position: absolute;
+        top: 25%;
+        left: 35%;
+        z-index: 1;
+        color: white;
+        font-size: 25px;
+    }
+
+    .banner img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+
+.fa-pause {
+    display: none;
+}
+
+.fa-play {
+    display: none;
+}

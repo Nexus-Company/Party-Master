@@ -33,10 +33,19 @@ async function updatePlayerList() {
 }
 
 function musicItem(msc) {
-    let ul = $('<li class="music-list card">');
-    let banner = $('<img class="banner">');
-    banner.attr('src', msc.album.images[0].url);
-    ul.append(banner);
+    let li = $('<li class="music-list">');
+    li.attr('data-spotify', msc.urls.spotify);
+    li.click(musicListClick);
+
+    let banner = $('<div class="banner">')
+    let img = $('<img class="banner">');
+    img.attr('src', msc.album.images[1].url);
+
+    banner.append('<i class="fa-solid fa-pause"></i>');
+    banner.append('<i class="fa-solid fa-play "></i>');
+    banner.append(img);
+
+    li.append(banner);
 
     let text = $('<div class="text">')
 
@@ -48,10 +57,9 @@ function musicItem(msc) {
     addArtists(msc.artists, artist);
     text.append(artist);
 
-    ul.append(text);
-    return ul;
+    li.append(text);
+    return li;
 }
-
 
 function addArtists(artists, list) {
     list.empty();
@@ -62,5 +70,13 @@ function addArtists(artists, list) {
         artist.text(artists[i].name);
 
         list.append(artist);
+    }
+}
+
+function musicListClick(event) {
+    let target = $(event.target).data('spotify');
+
+    if (target != undefined) {
+        window.open(target, '_blank');
     }
 }
