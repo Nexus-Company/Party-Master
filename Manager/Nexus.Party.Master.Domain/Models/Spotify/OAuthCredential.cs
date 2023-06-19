@@ -1,4 +1,6 @@
-﻿using System.Timers;
+﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Timers;
 using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 
@@ -55,6 +57,9 @@ public class OAuthCredential
         Refresh = obj!.Refresh;
         ExpiresIn = obj!.ExpiresIn;
     }
+
+    internal AuthenticationHeaderValue GetHeader()
+        => new(Type, Token);
 
     public override string ToString()
         => $"{Type}  {Token}";

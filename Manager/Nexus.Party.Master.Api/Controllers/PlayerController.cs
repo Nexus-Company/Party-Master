@@ -15,13 +15,27 @@ public class PlayerController : UseSyncController
     {
     }
 
+    [HttpGet("Queue")]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(Track[]), (int)HttpStatusCode.OK)]
+    public IActionResult Queue(int per_page = 25, int page = 1)
+    {
+        if (per_page > 100 ||
+            per_page < 1 ||
+            page < 1)
+            return BadRequest();
+
+        return Ok(SyncService.Queue.Skip((page - 1) * per_page)
+            .Take(per_page));
+    }
+
     [HttpGet("Actual")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType(typeof(Track), (int)HttpStatusCode.OK)]
     public IActionResult ActualAsync()
     {
-        if (SyncService.LastTrack is not null)
-            return Ok(SyncService.LastTrack);
+        if (SyncService.Track is not null)
+            return Ok(SyncService.Track);
 
         return NoContent();
     }

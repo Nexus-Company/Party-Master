@@ -6,45 +6,55 @@ using Nexus.Party.Master.Domain.Models.Spotify;
 
 namespace Nexus.Party.Master.Domain;
 
-public class SyncService : BackgroundService
+public partial class SyncService : BackgroundService
 {
     private readonly ILogger<SyncService> _logger;
-    private string? _lastMusicId = null;
 
     public delegate void NewMusic(object sender, EventArgs args);
 
     public event NewMusic? MusicChange;
     public OAuthCredential? Credential { get; set; }
     private HttpClient Client { get; } = new();
-    public Track? LastTrack { get; set; }
+    public Track? Track { get; set; }
 
     public SyncService(ILogger<SyncService> logger)
     {
         _logger = logger;
+        Queue = new List<Track>();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        bool first = false;
         while (!stoppingToken.IsCancellationRequested)
         {
             if (Credential == null)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+                first = true;
                 continue;
+            }
+
+            if (first)
+            {
+                await DefineQueueAsync(stoppingToken);
+                first = false;
             }
 
             await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken);
 
             var status = await GetStatus(stoppingToken);
 
-            LastTrack ??= status.Item;
+            Track ??= status.Item;
 
-            if (LastTrack.Id == (status.Item?.Id ?? string.Empty))
+            if (Track.Id == (status.Item?.Id ?? string.Empty))
                 continue;
+
+            await DefineQueueAsync(stoppingToken);
 
             MusicChange?.Invoke(status.Item, null!);
 
-            LastTrack = status.Item;
+            Track = status.Item;
         }
     }
 
@@ -60,20 +70,5 @@ public class SyncService : BackgroundService
         _logger.LogInformation("Music Sync Service is stopping asynchronously.");
 
         await base.StopAsync(cancellationToken);
-    }
-
-    private async Task<State> GetStatus(CancellationToken stoppingToken)
-    {
-        var request = new HttpRequestMessage()
-        {
-            RequestUri = new Uri("https://api.spotify.com/v1/me/player")
-        };
-        request.Headers.Authorization = new AuthenticationHeaderValue(Credential!.Type, Credential.Token);
-
-        var response = await Client.SendAsync(request, stoppingToken);
-
-        string state = await response.Content.ReadAsStringAsync(stoppingToken);
-
-        return JsonConvert.DeserializeObject<State>(state)!;
     }
 }
