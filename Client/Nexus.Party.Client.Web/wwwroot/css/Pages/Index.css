@@ -1,0 +1,61 @@
+﻿body {
+}
+
+.player {
+    display: inline-flex;
+}
+
+.player-music {
+    padding: 1rem;
+    width: 20rem;
+    text-align: center;
+    margin: 1rem 2.5rem;
+}
+
+    .player-music .actual img {
+        width: 14rem;
+        height: 14rem;
+        margin: 1.5rem .0rem;
+        border-radius: 1rem;
+    }
+
+#artists {
+    display: inline-flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    #artists li.artist {
+        width: min-content;
+        margin: 0;
+        padding: 0;
+    }
+
+        #artists li.artist:not(:last-child)::after {
+            content: ", ";
+        }
+
+.player-list {
+    list-style: none;
+    display: inline-grid;
+    overflow-y: scroll;
+    max-height: 35rem;
+}
+
+    .player-list .music-list {
+        display: inline;
+        min-width: 100%;
+        padding: .5rem;
+    }
+
+        .player-list .music-list h5 {
+            width: fit-content;
+            margin: 0;
+        }
+
+        .player-list .music-list img.banner {
+            width: 3.5rem;
+            height: 3.5rem;
+            margin: .3rem;
+        }

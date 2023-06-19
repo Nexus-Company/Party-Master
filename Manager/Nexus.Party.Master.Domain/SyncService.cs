@@ -35,26 +35,32 @@ public partial class SyncService : BackgroundService
                 continue;
             }
 
-            if (first)
-            {
-                await DefineQueueAsync(stoppingToken);
-                first = false;
-            }
-
             await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken);
 
-            var status = await GetStatus(stoppingToken);
+            try
+            {
+                if (first)
+                {
+                    await DefineQueueAsync(stoppingToken);
+                    first = false;
+                }
 
-            Track ??= status.Item;
+                var status = await GetStatus(stoppingToken);
 
-            if (Track.Id == (status.Item?.Id ?? string.Empty))
-                continue;
+                Track ??= status.Item;
 
-            await DefineQueueAsync(stoppingToken);
+                if (Track.Id == (status.Item?.Id ?? string.Empty))
+                    continue;
 
-            MusicChange?.Invoke(status.Item, null!);
+                await DefineQueueAsync(stoppingToken);
 
-            Track = status.Item;
+                MusicChange?.Invoke(status.Item, null!);
+
+                Track = status.Item;
+            }
+            catch (Exception ex)
+            {
+            }
         }
     }
 

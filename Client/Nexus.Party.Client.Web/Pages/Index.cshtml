@@ -4,13 +4,20 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="player card">
-    <div class="actual">
-        <img id="img" />
-        <p id="name"></p>
+<div class="player">
+    <ol class="player-list" id="nextList">
+    </ol>
+
+    <div class="player-music card card-light">
+        <div class="actual">
+            <img id="img" />
+            <h3 id="name">Teste</h3>
+            <ul id="artists"><li>Juan</li> <li>MC Junim</li> <li> Douglas S</li></ul>
+        </div>
     </div>
 </div>
 
 @section Scripts{
+    <link rel="stylesheet" href="~/css/Pages/Index.css" />
     <script type="text/javascript" src="@Url.Content("js/Pages/Index.js")"></script>
 }   

@@ -24,6 +24,4 @@ public class Track
 public class Album {
     public IEnumerable<Image>? Images { get; set; }
     public string Name { get; set; }
-    [JsonProperty("release_date")]
-    public DateTime Release { get; set; }
 }
