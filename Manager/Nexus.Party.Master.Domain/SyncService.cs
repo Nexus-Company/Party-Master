@@ -16,13 +16,12 @@ public class SyncService : BackgroundService
     public event NewMusic? MusicChange;
     public OAuthCredential? Credential { get; set; }
     private HttpClient Client { get; } = new();
-    
+    public Track? LastTrack { get; set; }
 
     public SyncService(ILogger<SyncService> logger)
     {
         _logger = logger;
     }
-
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -38,14 +37,14 @@ public class SyncService : BackgroundService
 
             var status = await GetStatus(stoppingToken);
 
-            _lastMusicId ??= status.Item.Id;
+            LastTrack ??= status.Item;
 
-            if (_lastMusicId == status.Item.Id) 
+            if (LastTrack.Id == (status.Item?.Id ?? string.Empty))
                 continue;
-            
+
             MusicChange?.Invoke(status.Item, null!);
 
-            _lastMusicId = status.Item.Id;
+            LastTrack = status.Item;
         }
     }
 
@@ -62,8 +61,7 @@ public class SyncService : BackgroundService
 
         await base.StopAsync(cancellationToken);
     }
-    
-    
+
     private async Task<State> GetStatus(CancellationToken stoppingToken)
     {
         var request = new HttpRequestMessage()
@@ -74,6 +72,8 @@ public class SyncService : BackgroundService
 
         var response = await Client.SendAsync(request, stoppingToken);
 
-        return JsonConvert.DeserializeObject<State>(await response.Content.ReadAsStringAsync(stoppingToken))!;
+        string state = await response.Content.ReadAsStringAsync(stoppingToken);
+
+        return JsonConvert.DeserializeObject<State>(state)!;
     }
 }

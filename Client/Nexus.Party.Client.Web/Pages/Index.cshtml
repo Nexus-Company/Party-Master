@@ -1,0 +1,16 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="player card">
+    <div class="actual">
+        <img id="img" />
+        <p id="name"></p>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="@Url.Content("js/Pages/Index.js")"></script>
+}   

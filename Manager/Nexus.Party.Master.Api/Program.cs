@@ -18,6 +18,9 @@ builder.Services.AddSingleton<SyncService>();
 builder.Services.AddHostedService(provider => provider.GetService<SyncService>());
 
 var app = builder.Build();
+var confg = app.Configuration;
+
+app.UseWebSockets();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,13 +28,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseCors(builder =>
+      builder
+          .WithOrigins(confg.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>())
+          .WithHeaders(confg.GetSection("Cors:Headers").Get<string[]>() ?? Array.Empty<string>())
+          .AllowAnyMethod()
+          .AllowCredentials());
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseWebSockets();
 
 app.Run();

@@ -1,0 +1,12 @@
+﻿body {
+}
+
+.player {
+    padding: 1rem;
+}
+
+    .player .actual img {
+        width: 10rem;
+        height: 10rem;
+        border-radius: 10rem;
+    }

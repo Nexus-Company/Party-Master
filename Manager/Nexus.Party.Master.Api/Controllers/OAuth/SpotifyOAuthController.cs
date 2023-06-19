@@ -10,7 +10,6 @@ public class SpotifyOAuthController : UseSyncController
     private string ClientId { get; set; }
     private string Secret { get; set; }
     private static string? State { get; set; }
-
     private string[] Scopes { get; set; }
 
     public SpotifyOAuthController(IServiceProvider serviceProvider, IConfiguration config)
@@ -70,7 +69,7 @@ public class SpotifyOAuthController : UseSyncController
             .Credential
             .ConfigureRefresh(ClientId, Secret, Scopes);
 
-        return Ok();
+        return Redirect("https://localhost:44370/");
     }
 
     [HttpGet, Route("Authorize")]

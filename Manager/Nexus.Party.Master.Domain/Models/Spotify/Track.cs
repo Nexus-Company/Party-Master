@@ -10,16 +10,20 @@ public class Track
     [JsonProperty("is_local")]
     public bool IsLocal { get; set; }
     public string Name { get; set; }
+    /// <summary>
+    /// Spotify 30 seconds audio preview.
+    /// </summary>
     [JsonProperty("preview_url")]
-    public string PreviewUrl { get; set; }
+    public string? PreviewUrl { get; set; }
+    public string Uri { get; set; }
     public IEnumerable<Artist> Artists { get; set; }
+    public Album Album { get; set; }
 }
 
-public class Artist
-{
-    public string Id { get; set; }
+
+public class Album {
+    public IEnumerable<Image>? Images { get; set; }
     public string Name { get; set; }
-    public string Label { get; set; }
-    public int Popularity { get; set; }
-    public IEnumerable<string> Genres { get; set; }
+    [JsonProperty("release_date")]
+    public DateTime Release { get; set; }
 }
