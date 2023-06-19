@@ -5,3 +5,21 @@
 
 const scktURl = 'wss://localhost:44383/api/'
     , apiUrl = 'https://localhost:44383/api/';
+
+var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+
+function setTheme(darkMode) {
+    var body = $(document.body);
+
+    if (darkMode) {
+        body.attr('data-bs-theme', 'dark');
+    } else {
+        body.attr('data-bs-theme', 'light');
+    }
+}
+
+setTheme(prefersDarkMode.matches);
+
+prefersDarkMode.addEventListener('change', function (e) {
+    setTheme(e.matches);
+});

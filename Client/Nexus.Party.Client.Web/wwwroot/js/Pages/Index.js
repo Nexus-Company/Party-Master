@@ -1,5 +1,5 @@
 ﻿const sckt = new WebSocket(`${scktURl}Player/Connect`);
-var actual, playerlist;
+var actual, playerList, showing;
 
 $(document).ready(async function () {
     sckt.onmessage = scktMessage;
@@ -34,12 +34,13 @@ async function updatePlayerList() {
 
 function musicItem(msc) {
     let li = $('<li class="music-list">');
-    li.attr('data-spotify', msc.urls.spotify);
-    li.click(musicListClick);
+    li.attr('data-spotify', msc.id);
+    li.click(musicPlayClick);
 
     let banner = $('<div class="banner">')
     let img = $('<img class="banner">');
     img.attr('src', msc.album.images[1].url);
+    img.click(musicListClick);
 
     banner.append('<i class="fa-solid fa-pause"></i>');
     banner.append('<i class="fa-solid fa-play "></i>');
@@ -58,6 +59,7 @@ function musicItem(msc) {
     text.append(artist);
 
     li.append(text);
+    msc.preview = new Audio(msc.previewURL);
     return li;
 }
 
@@ -74,9 +76,30 @@ function addArtists(artists, list) {
 }
 
 function musicListClick(event) {
-    let target = $(event.target).data('spotify');
+    let target = $(event.target)
+        .parent()
+        .parent()
+        .data('spotify');
 
     if (target != undefined) {
-        window.open(target, '_blank');
+        window.open(`https://open.spotify.com/track/${target}`, '_blank');
     }
+}
+
+async function musicPlayClick(event) {
+    let target = $(event.target)
+        .parent()
+        .parent()
+        .data('spotify');
+
+    var msc = $.grep(playerList, function (music) {
+        return music.id === target;
+    })[0];
+
+    if (showing != undefined && !showing.paused) {
+        await showing.pause()
+    }
+
+    showing = new Audio(msc.previewUrl);
+    await showing.play();
 }

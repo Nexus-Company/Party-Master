@@ -103,3 +103,24 @@
 .fa-play {
     display: none;
 }
+
+
+.preview {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 35rem;
+    background-color: var(--color-primary);
+    padding: .3rem;
+    text-align: left;
+    border-radius: 5%;
+    margin: 0 0 1rem;
+    z-index: 100;
+}
+
+    .preview img {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 15%;
+    }
