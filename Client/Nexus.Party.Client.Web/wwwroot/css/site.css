@@ -24,3 +24,20 @@ body {
 :root {
     --color-primary: #257470;
 }
+
+
+.nav-bar {
+    background-color: var(--color-primary);
+}
+
+.card {
+    --bs-card-bg: #ffffffc9;
+}
+
+body[data-bs-theme=dark] .card {
+    --bs-card-bg: #212529c4;
+}
+
+[data-bs-theme=dark] {
+    --bs-body-bg: #161a23;
+}

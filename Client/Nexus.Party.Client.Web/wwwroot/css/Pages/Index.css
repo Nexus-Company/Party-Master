@@ -13,10 +13,10 @@
 }
 
     .player-music .actual img {
-        width: 14rem;
-        height: 14rem;
+        width: 15rem;
         margin: 1.5rem .0rem;
         border-radius: 1rem;
+        max-width: 100%;
     }
 
 #artists {
@@ -104,7 +104,6 @@
     display: none;
 }
 
-
 .preview {
     position: fixed;
     left: 0;
@@ -124,3 +123,34 @@
         height: 4rem;
         border-radius: 15%;
     }
+
+.player-music:after {
+    position: absolute;
+    content: "";
+    top: 5vw;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    transform: scale(.8);
+    filter: blur(6vw);
+    background: linear-gradient(270deg, #0fffc1, #7e0fff);
+    background-size: 150% 300%;
+    animation: animateGlow 9s ease infinite;
+}
+
+@keyframes animateGlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}

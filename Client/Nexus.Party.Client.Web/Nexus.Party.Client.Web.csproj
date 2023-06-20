@@ -11,8 +11,4 @@
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\js\Pages\Index.js" />
-  </ItemGroup>
-
 </Project>
