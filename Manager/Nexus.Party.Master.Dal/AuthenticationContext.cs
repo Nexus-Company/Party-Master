@@ -3,17 +3,25 @@ using Nexus.Party.Master.Dal.Models.Accounts;
 
 namespace Nexus.Party.Master.Dal;
 
-public partial class AuthenticationContext : DbContext
+public class AuthenticationContext : DbContext
 {
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public string ConnectionString { get; set; }
+    private readonly string ConnectionString;
+
+    public AuthenticationContext()
+    {
+        ConnectionString = "Data Source=.\\Databases\\Authentication.db";
+    }
+
+    public AuthenticationContext(string conn)
+    {
+        ConnectionString = conn;
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        base.OnConfiguring(optionsBuilder);
-
         if (!optionsBuilder.IsConfigured)
-            optionsBuilder.UseSqlServer(ConnectionString);
+            optionsBuilder.UseSqlite(ConnectionString);
     }
 }

@@ -31,7 +31,7 @@ body {
 }
 
 .card {
-    --bs-card-bg: #ffffffc9;
+    --bs-card-bg: #ffffff99;
 }
 
 body[data-bs-theme=dark] .card {
@@ -40,4 +40,25 @@ body[data-bs-theme=dark] .card {
 
 [data-bs-theme=dark] {
     --bs-body-bg: #161a23;
+}
+
+.hide {
+    display: none !important;
+    opacity: 0;
+}
+
+.hiding {
+    animation: Hide 1s ease;
+}
+
+@keyframes Hiding {
+    0% {
+        opacity: 1;
+        display: block;
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }

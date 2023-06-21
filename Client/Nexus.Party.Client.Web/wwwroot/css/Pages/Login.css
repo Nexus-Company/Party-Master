@@ -1,0 +1,26 @@
+﻿main {
+    padding-top: 2.5rem;
+    text-align: center;
+}
+
+.button-login {
+    position: relative;
+    display: inline-flex;
+    justify-content: left;
+    align-items: flex-start;
+    font-size: 1em;
+    font-weight: bold;
+    padding: .75rem 1.25rem;
+    cursor: pointer;
+    text-decoration: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 20%;
+    width: 17rem;
+    text-align: left;
+    border-image: linear-gradient(to right, #0fffc1, #7e0fff) 1;
+}
+
+    .button-login .svg-inline--fa {
+        margin-right: .5rem;
+    }

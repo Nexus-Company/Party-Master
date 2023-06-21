@@ -11,7 +11,7 @@ public class SpotifyOAuthController : OAuthController
     public SpotifyOAuthController(IServiceProvider serviceProvider, IConfiguration config)
         : base(serviceProvider, config, ConfigKey)
     {
-      
+
     }
 
     [HttpGet, Route("Callback")]

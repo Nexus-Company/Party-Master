@@ -6,6 +6,7 @@ public class UseSyncController : BaseController
 {
     private protected readonly SyncService SyncService;
     private protected UseSyncController(IServiceProvider serviceProvider)
+        : base()
     {
         SyncService = serviceProvider.GetService<SyncService>()!;
     }
@@ -15,7 +16,7 @@ public partial class OAuthController
 {
     private protected readonly SyncService? SyncService;
     private protected OAuthController(IServiceProvider serviceProvider, IConfiguration config, string configKey)
-        : this(config,configKey)
+        : this(config, configKey)
     {
         SyncService = serviceProvider.GetService<SyncService>()!;
     }

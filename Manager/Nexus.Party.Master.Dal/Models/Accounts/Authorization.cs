@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Nexus.Party.Master.Dal.Models.Accounts
+namespace Nexus.Party.Master.Dal.Models.Accounts;
+
+public class Authorization
 {
-    internal class Authorization
-    {
-    }
+    [Key]
+    public long Id { get; set; }
+
+    [Required]
+    public string Token { get; set; }
+
+    [Required]
+    public DateTime Generated { get; set; }
 }

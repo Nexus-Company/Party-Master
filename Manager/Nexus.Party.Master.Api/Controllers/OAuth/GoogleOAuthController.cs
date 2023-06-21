@@ -2,7 +2,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
+using Microsoft.EntityFrameworkCore;
+using Nexus.Party.Master.Dal.Models.Accounts;
 using System.Net;
+using System.Numerics;
 
 namespace Nexus.Party.Master.Api.OAuth.Controllers;
 
@@ -26,14 +29,35 @@ public class GoogleOAuthController : OAuthController
     [HttpGet("CallBack")]
     public async Task<IActionResult> GoogleCallbackAsync(string code, string authUser, bool web = true)
     {
-        var accessToken = await GoogleAuthHelper.GetAccessToken(ClientId, Secret, code, RedirectUri, authUser);
+        try
+        {
+            var accessToken = await GoogleAuthHelper.GetAccessToken(ClientId, Secret, code, RedirectUri, authUser);
 
-        var requestUrl = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken.AccessToken;
-        var response = await new HttpClient().GetAsync(requestUrl);
-        var responseContent = await response.Content.ReadAsStringAsync();
-        var obj = JsonConvert.DeserializeObject<GoogleAccountResponse>(responseContent);
+            var requestUrl = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken.AccessToken;
+            var response = await new HttpClient().GetAsync(requestUrl);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var obj = JsonConvert.DeserializeObject<GoogleAccountResponse>(responseContent);
 
+            string gId = obj.Id.ToString();
 
+            Account? account = await (from acc in authCtx.Accounts
+                                      where acc.GoogleId == gId
+                                      select acc).FirstOrDefaultAsync();
+
+            account ??= new Account()
+            {
+                GoogleId = gId,
+                Name = obj.Name,
+                PictureUrl = obj.Picture,
+                Email = obj.Email
+            };
+
+            await authCtx.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            return RedirectToAction("Authorize");
+        }
 
         // Extrair os dados da conta do JSON de resposta
         // O formato do JSON de resposta pode variar dependendo da versão da API do Google
@@ -47,7 +71,7 @@ public class GoogleOAuthController : OAuthController
 
 public class GoogleAccountResponse
 {
-    public long Id { get; set; }
+    public BigInteger Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string Picture { get; set; }

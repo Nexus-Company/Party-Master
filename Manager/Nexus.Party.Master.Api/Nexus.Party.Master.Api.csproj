@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nexus.Party.Master.Dal\Nexus.Party.Master.Dal.csproj" />
     <ProjectReference Include="..\Nexus.Party.Master.Domain\Nexus.Party.Master.Domain.csproj" />
   </ItemGroup>
 

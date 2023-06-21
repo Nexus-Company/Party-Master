@@ -17,15 +17,30 @@
     </div>
 </div>
 
-@*<div class="preview">
-    <img src="https://i.scdn.co/image/ab67616d00001e021e2a7b84b8a20e05116ae654" width="50" />
-    <div>
-
+<div class="card glow preview hide">
+    <a class="spotify" target="_blank">
+        <img src="https://i.scdn.co/image/ab67616d00001e021e2a7b84b8a20e05116ae654" width="50" />
+    </a>
+    <div class="content">
+        <h5 class="name">Baile Da Roosevelt (Pam Pararam)</h5>
+        <ul id="artists">
+            <li class="artist">Juan</li>
+            <li class="artist">MC Junim</li>
+            <li class="artist"> Douglas S</li>
+        </ul>
+        <div class="time">
+        </div>
     </div>
-</div>*@
+</div>
 
 
 @section Scripts{
     <link rel="stylesheet" href="~/css/Pages/Index.css" asp-append-version="true" />
     <script type="text/javascript" src="@Url.Content("js/Pages/Index.js")" asp-append-version="true"></script>
-}   
+}
+
+@*@section Header {
+    <!-- Inclua os arquivos CSS e JavaScript do bootstrap-slider -->
+    <link rel="stylesheet" href="~/lib/bootstrap-slider/css/bootstrap-slider.min.css" asp-append-version="true" />
+    <script type="text/javascript" src="~/lib/bootstrap-slider/bootstrap-slider.min.js" asp-append-version="true"></script>
+            }*@

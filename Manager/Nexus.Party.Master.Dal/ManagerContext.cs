@@ -8,9 +8,7 @@ public class ManagerContext : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        base.OnConfiguring(optionsBuilder);
-
-        if (UseSQLite)
-            optionsBuilder.UseSqlite("Data Source=Party_Manager.db");
+        if (!optionsBuilder.IsConfigured)
+            optionsBuilder.UseSqlite("Data Source=.\\Databases\\Authentication.db");
     }
 }

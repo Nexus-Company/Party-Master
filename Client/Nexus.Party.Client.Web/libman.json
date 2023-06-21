@@ -13,6 +13,10 @@
     {
       "library": "bootstrap@5.3.0",
       "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "bootstrap-slider@11.0.2",
+      "destination": "wwwroot/lib/bootstrap-slider/"
     }
   ]
 }

@@ -16,6 +16,7 @@ public partial class SyncService : BackgroundService
     public OAuthCredential? Credential { get; set; }
     private HttpClient Client { get; } = new();
     public Track? Track { get; set; }
+    public bool Online { get; set; }
 
     public SyncService(ILogger<SyncService> logger)
     {
@@ -47,6 +48,13 @@ public partial class SyncService : BackgroundService
 
                 var status = await GetStatus(stoppingToken);
 
+                if (status == null)
+                {
+                    Online = false;
+                    continue;
+                }
+
+                Online = true;
                 Track ??= status.Item;
 
                 if (Track.Id == (status.Item?.Id ?? string.Empty))
@@ -54,12 +62,13 @@ public partial class SyncService : BackgroundService
 
                 await DefineQueueAsync(stoppingToken);
 
-                MusicChange?.Invoke(status.Item, null!);
+                MusicChange?.Invoke(status!.Item, null!);
 
                 Track = status.Item;
             }
             catch (Exception ex)
             {
+                Online = false;
             }
         }
     }

@@ -96,10 +96,32 @@ async function musicPlayClick(event) {
         return music.id === target;
     })[0];
 
+    if (msc === undefined) {
+        return;
+    }
+
     if (showing != undefined && !showing.paused) {
         await showing.pause()
     }
 
+    var prv = $('.preview')
+
+    prv.removeClass('hide');
+
+    prv.find('.name')
+        .text(msc.name)
+
+    prv.find('.spotify')
+        .attr('href', msc.urls.spotify)
+
+    prv.find('img')
+        .attr('src', msc.album.images[1].url);
+
+    addArtists(msc.artists, prv.find('#artists'));
+
     showing = new Audio(msc.previewUrl);
+    showing.onended = function EndMusic() {
+        console.log('music end');
+    }
     await showing.play();
 }
