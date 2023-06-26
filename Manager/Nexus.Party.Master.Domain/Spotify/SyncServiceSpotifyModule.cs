@@ -1,19 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Nexus.Party.Master.Domain.Models.Spotify;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Nexus.Party.Master.Domain
+namespace Nexus.Party.Master.Domain.Spotify
 {
     public partial class SyncService
     {
         const string PlayerUrl = "https://api.spotify.com/v1/me/player";
         public IEnumerable<Track> Queue { get; set; }
-     
+
         private protected async Task<State> GetStatus(CancellationToken stoppingToken)
         {
             var request = new HttpRequestMessage()
@@ -46,7 +40,8 @@ namespace Nexus.Party.Master.Domain
             Queue = rst.Queue;
         }
 
-        private class QueueResult {
+        private class QueueResult
+        {
 
             public IEnumerable<Track> Queue { get; set; }
         }

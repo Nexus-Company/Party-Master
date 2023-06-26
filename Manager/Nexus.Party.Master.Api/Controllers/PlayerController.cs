@@ -7,11 +7,12 @@ using System.Text;
 namespace Nexus.Party.Master.Api.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/Player")]
 public class PlayerController : UseSyncController
 {
-    public PlayerController(IServiceProvider serviceProvider)
-        : base(serviceProvider)
+    public PlayerController(IConfiguration config, IServiceProvider serviceProvider)
+        : base(config, serviceProvider)
     {
     }
 

@@ -18,12 +18,13 @@ public class Track
     public string Uri { get; set; }
     public IEnumerable<Artist> Artists { get; set; }
     [JsonProperty("external_urls")]
-    public IDictionary<string,string> Urls { get; set; }
+    public IDictionary<string, string> Urls { get; set; }
     public Album Album { get; set; }
 }
 
 
-public class Album {
+public class Album
+{
     public IEnumerable<Image>? Images { get; set; }
     public string Name { get; set; }
 }

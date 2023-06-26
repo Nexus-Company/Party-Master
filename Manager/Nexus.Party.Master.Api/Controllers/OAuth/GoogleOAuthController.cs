@@ -4,11 +4,13 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal.Models.Accounts;
+using Nexus.Party.Master.Domain;
 using System.Net;
 using System.Numerics;
 
 namespace Nexus.Party.Master.Api.OAuth.Controllers;
 
+[AllowAnonymous]
 [Route("Google")]
 public class GoogleOAuthController : OAuthController
 {
@@ -29,6 +31,8 @@ public class GoogleOAuthController : OAuthController
     [HttpGet("CallBack")]
     public async Task<IActionResult> GoogleCallbackAsync(string code, string authUser, bool web = true)
     {
+        Account? account;
+
         try
         {
             var accessToken = await GoogleAuthHelper.GetAccessToken(ClientId, Secret, code, RedirectUri, authUser);
@@ -40,17 +44,28 @@ public class GoogleOAuthController : OAuthController
 
             string gId = obj.Id.ToString();
 
-            Account? account = await (from acc in authCtx.Accounts
-                                      where acc.GoogleId == gId
-                                      select acc).FirstOrDefaultAsync();
+            account = await (from acc in authCtx.Accounts
+                             where acc.GoogleId == gId
+                             select acc).FirstOrDefaultAsync();
 
-            account ??= new Account()
+            if (account == null)
             {
-                GoogleId = gId,
-                Name = obj.Name,
-                PictureUrl = obj.Picture,
-                Email = obj.Email
-            };
+                account = new Account()
+                {
+                    GoogleId = gId,
+                    Name = obj.Name,
+                    PictureUrl = obj.Picture,
+                    Email = obj.Email
+                };
+
+                await authCtx.Accounts.AddAsync(account);
+            }
+            else
+            {
+                account.Name = obj.Name;
+                account.PictureUrl = obj.Picture;
+                account.Email = obj.Email;
+            }
 
             await authCtx.SaveChangesAsync();
         }
@@ -59,11 +74,22 @@ public class GoogleOAuthController : OAuthController
             return RedirectToAction("Authorize");
         }
 
-        // Extrair os dados da conta do JSON de resposta
-        // O formato do JSON de resposta pode variar dependendo da versão da API do Google
+        Authentication auth = new(AuthenticationHelper.GenerateToken(96), account.Id);
+
+        await authCtx.Authentications.AddAsync(auth);
 
         if (web)
-            return Redirect(Url.Action("Index", "Home", null));
+        {
+            HttpContext.Response.Cookies.Append(AuthenticationHelper.AuthKey, auth.Token, new CookieOptions()
+            {
+                HttpOnly = true,
+                IsEssential = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
+            return Redirect(Config.WebUrl);
+        }
 
         return StatusCode((int)HttpStatusCode.NotImplemented);
     }
@@ -76,7 +102,6 @@ public class GoogleAccountResponse
     public string Email { get; set; }
     public string Picture { get; set; }
 }
-
 
 public static class GoogleAuthHelper
 {

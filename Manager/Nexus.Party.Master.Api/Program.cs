@@ -1,13 +1,16 @@
 #region Globals
 global using Microsoft.AspNetCore.Mvc;
-global using Nexus.Party.Master.Api.Controllers.Base;
 global using Newtonsoft.Json;
-using Nexus.Party.Master.Domain;
-
+global using Nexus.Party.Master.Api.Controllers.Base;
+global using Nexus.Tools.Validations.Middlewares.Authentication.Attributes;
 #endregion
 
-var builder = WebApplication.CreateBuilder(args);
+using Nexus.Party.Master.Domain;
+using Nexus.Party.Master.Domain.Spotify;
+using Nexus.Tools.Validations.Middlewares.Authentication;
 
+var builder = WebApplication.CreateBuilder(args);
+var authHelper = new AuthenticationHelper(new(BaseController.AuthConnString));
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -41,7 +44,8 @@ app.UseCors(builder =>
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// Use Nexus Middleware for control clients authentications
+app.UseAuthentication(authHelper.ValidAuthenticationAsync);
 
 app.MapControllers();
 

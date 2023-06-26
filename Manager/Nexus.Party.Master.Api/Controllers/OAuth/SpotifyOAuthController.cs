@@ -2,6 +2,7 @@
 
 namespace Nexus.Party.Master.Api.OAuth.Controllers;
 
+[AllowAnonymous]
 [ApiController, Route("Spotify")]
 public class SpotifyOAuthController : OAuthController
 {

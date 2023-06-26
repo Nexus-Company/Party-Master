@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Nexus.Party.Master.Domain.Models.Spotify;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿namespace Nexus.Party.Master.Api.Controllers.Base;
 
-namespace Nexus.Party.Master.Api.Controllers.Base;
 public partial class OAuthController : BaseController
 {
     private protected static string? State { get; set; }
@@ -11,7 +8,7 @@ public partial class OAuthController : BaseController
     private protected string[] Scopes { get; set; }
 
     private protected OAuthController(IConfiguration config, string configKey)
-        : base()
+        : base(config)
     {
         Exception error =
             new ArgumentException("It's not possible start this application without Spotify ClientId, ClientSecret and Scopes.");
@@ -26,5 +23,4 @@ public partial class OAuthController : BaseController
 
         Scopes = scopes.ToArray();
     }
-
 }

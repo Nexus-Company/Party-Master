@@ -1,10 +1,8 @@
-﻿using System.Net.Http.Headers;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Nexus.Party.Master.Domain.Models.Spotify;
 
-namespace Nexus.Party.Master.Domain;
+namespace Nexus.Party.Master.Domain.Spotify;
 
 public partial class SyncService : BackgroundService
 {

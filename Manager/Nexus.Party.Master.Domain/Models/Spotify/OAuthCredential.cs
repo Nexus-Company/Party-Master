@@ -1,7 +1,6 @@
-﻿using System.Net;
+﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Timers;
-using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 
 namespace Nexus.Party.Master.Domain.Models.Spotify;
