@@ -17,10 +17,15 @@ public class AuthenticationHelper
         authCtx = ctx;
     }
 
+    /// <summary>
+    /// Api Authentication Handler Implementation
+    /// </summary>
+    /// <param name="ctx">Http Context</param>
+    /// <returns>Authentication Validation result with contains one valid authentication.</returns>
     public async Task<AuthenticationResult> ValidAuthenticationAsync(HttpContext ctx)
     {
         AuthenticationResult result = new(false, false);
-        Authentication? auth = await GetAuthenticationAsync(ctx);
+        Authentication? auth = await GetAuthenticationAsync(authCtx, ctx);
 
         if (auth != null)
             return new(true, true);
@@ -28,22 +33,57 @@ public class AuthenticationHelper
         return result;
     }
 
-    public async Task<Authentication?> GetAuthenticationAsync(HttpContext ctx)
+    private static async Task<Authentication?> GetAuthenticationAsync(AuthenticationContext dbCtx, HttpContext ctx)
     {
         Authentication? auth = null;
 
-        var cookie = ctx.Request.Cookies[AuthKey] ?? ctx.Request.Headers[AuthKey];
+        string cookie = ctx.Request.Cookies[AuthKey];
 
-        if (cookie == null)
-            return null;
+        if (string.IsNullOrEmpty(cookie))
+        {
+            cookie = ctx.Request.Headers["Authorization"].FirstOrDefault() ?? string.Empty;
 
-        auth = await (from aut in authCtx.Authentications
+            try
+            {
+                cookie = cookie.Split(' ')[1];
+
+                if (string.IsNullOrWhiteSpace(cookie))
+                    return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        auth = await (from aut in dbCtx.Authentications
                       where aut.Token == cookie
                       select aut).FirstOrDefaultAsync();
+
 
         return auth;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dbCtx"></param>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
+    public static async Task<Account?> TryGetAccount(AuthenticationContext dbCtx, HttpContext ctx)
+    {
+        Authentication? auth = await GetAuthenticationAsync(dbCtx, ctx);
+        Account? account = null;
+
+        if (auth == null)
+            return account;
+
+        account = await (from acc in dbCtx.Accounts
+                         where acc.Id == auth.AccountId
+                         select acc).FirstOrDefaultAsync();
+
+        return null;
+    }
 
     /// <summary>
     /// Generate Tokens with specific length

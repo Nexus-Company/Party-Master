@@ -78,6 +78,8 @@ public class GoogleOAuthController : OAuthController
 
         await authCtx.Authentications.AddAsync(auth);
 
+        await authCtx.SaveChangesAsync();
+
         if (web)
         {
             HttpContext.Response.Cookies.Append(AuthenticationHelper.AuthKey, auth.Token, new CookieOptions()

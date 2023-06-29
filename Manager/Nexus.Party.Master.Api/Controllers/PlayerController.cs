@@ -19,14 +19,24 @@ public class PlayerController : UseSyncController
     [HttpGet("Queue")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(Track[]), (int)HttpStatusCode.OK)]
-    public IActionResult Queue(int per_page = 25, int page = 1)
+    public IActionResult Queue(string? key = null, int per_page = 25, int page = 1)
     {
+        IEnumerable<Track> result = Array.Empty<Track>();
+
         if (per_page > 100 ||
             per_page < 1 ||
             page < 1)
             return BadRequest();
 
-        return Ok(SyncService.Queue.Skip((page - 1) * per_page)
+        if (!string.IsNullOrEmpty(key))
+            result = (from msc in SyncService.Queue
+                      where msc.Name.Contains(key)
+                      select msc);
+        else
+            result = SyncService.Queue;
+
+
+        return Ok(result.Skip((page - 1) * per_page)
             .Take(per_page));
     }
 

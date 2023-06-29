@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Cors;
 using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal;
+using Nexus.Party.Master.Dal.Models.Accounts;
+using Nexus.Party.Master.Domain;
 using System.Net;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;
@@ -10,10 +12,23 @@ namespace Nexus.Party.Master.Api.Controllers.Base;
 [Route("api/[controller]")]
 public class BaseController : ControllerBase
 {
+    public static readonly string AuthConnString = @$"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Databases\Authentication.db";
+
     private protected readonly AuthenticationContext authCtx;
     public readonly Config Config;
 
-    public static readonly string AuthConnString = @$"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Databases\Authentication.db";
+    private protected Account? User
+    {
+        get
+        {
+            var task = AuthenticationHelper.TryGetAccount(authCtx, HttpContext);
+
+            task.Wait();
+
+            return task.Result;
+        }
+    }
+
     public BaseController(IConfiguration config)
         : base()
     {

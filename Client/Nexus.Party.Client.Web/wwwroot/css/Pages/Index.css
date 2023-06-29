@@ -40,8 +40,9 @@
 
 .player-list {
     display: inline-grid;
-    overflow-y: scroll;
     max-height: 35rem;
+    max-width: 24rem;
+    overflow: hidden scroll;
 }
 
     .player-list .artist {
@@ -51,7 +52,7 @@
     .player-list .music-list {
         display: inline-flex;
         min-width: 100%;
-        padding: .5rem;
+        padding: .3rem .25rem .3rem 0;
         flex-direction: row;
     }
 
