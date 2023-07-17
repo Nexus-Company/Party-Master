@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Nexus.Party.Master.Domain.Models.Spotify;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿namespace Nexus.Party.Master.Api.Controllers.Base;
 
-namespace Nexus.Party.Master.Api.Controllers.Base;
 public partial class OAuthController : BaseController
 {
     private protected static string? State { get; set; }
@@ -26,5 +23,4 @@ public partial class OAuthController : BaseController
 
         Scopes = scopes.ToArray();
     }
-
 }

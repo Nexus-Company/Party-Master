@@ -1,4 +1,4 @@
-﻿using Nexus.Party.Master.Domain.Models.Spotify;
+﻿using Nexus.Spotify.Client;
 
 namespace Nexus.Party.Master.Api.OAuth.Controllers;
 
@@ -46,12 +46,13 @@ public class SpotifyOAuthController : OAuthController
         if (!response.IsSuccessStatusCode)
             return BadRequest(text);
 
-        SyncService!.Credential = JsonConvert.DeserializeObject<OAuthCredential>(text) ??
-                                  throw new ArgumentException("Authentication OAuth 2.0 failed.");
+        var credential = JsonConvert.DeserializeObject<OAuthCredential>(text) ??
+                                   throw new ArgumentException("Authentication OAuth 2.0 failed.");
 
+
+        SyncService!.SpotifyClient = new(credential);
         State = Guid.NewGuid().ToString();
-        SyncService
-            .Credential
+        credential
             .ConfigureRefresh(ClientId, Secret, Scopes);
 
         return Redirect("https://localhost:44370/");

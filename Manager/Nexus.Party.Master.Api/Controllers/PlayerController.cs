@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Serialization;
-using Nexus.Party.Master.Domain.Models.Spotify;
+using Nexus.Spotify.Client.Models;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;

@@ -1,8 +1,7 @@
-﻿using System.Net.Http.Headers;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Nexus.Party.Master.Domain.Models.Spotify;
+using Nexus.Spotify.Client;
+using Nexus.Spotify.Client.Models;
 
 namespace Nexus.Party.Master.Domain;
 
@@ -13,10 +12,10 @@ public partial class SyncService : BackgroundService
     public delegate void NewMusic(object sender, EventArgs args);
 
     public event NewMusic? MusicChange;
-    public OAuthCredential? Credential { get; set; }
-    private HttpClient Client { get; } = new();
-    public Track? Track { get; set; }
-    public bool Online { get; set; }
+    public SpotifyClient? SpotifyClient { get; set; }
+    public Track? Track { get; private set; }
+    public IEnumerable<Track> Queue { get; private set; }
+    public bool Online { get; private set; }
 
     public SyncService(ILogger<SyncService> logger)
     {
@@ -29,7 +28,7 @@ public partial class SyncService : BackgroundService
         bool first = false;
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (Credential == null)
+            if (SpotifyClient == null)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                 first = true;
@@ -40,18 +39,18 @@ public partial class SyncService : BackgroundService
 
             try
             {
-                if (first)
-                {
-                    await DefineQueueAsync(stoppingToken);
-                    first = false;
-                }
-
-                var status = await GetStatus(stoppingToken);
+                var status = await SpotifyClient.GetStatusAsync(stoppingToken);
 
                 if (status == null)
                 {
                     Online = false;
                     continue;
+                }
+
+                if (first && status.IsPlaying)
+                {
+                    Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
+                    first = false;
                 }
 
                 Online = true;
@@ -60,7 +59,7 @@ public partial class SyncService : BackgroundService
                 if (Track.Id == (status.Item?.Id ?? string.Empty))
                     continue;
 
-                await DefineQueueAsync(stoppingToken);
+                Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
 
                 MusicChange?.Invoke(status!.Item, null!);
 

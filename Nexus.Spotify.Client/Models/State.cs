@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Nexus.Party.Master.Domain.Models.Spotify;
+﻿namespace Nexus.Spotify.Client.Models;
 
 public class State
 {
