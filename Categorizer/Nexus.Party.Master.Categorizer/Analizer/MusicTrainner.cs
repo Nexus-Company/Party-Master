@@ -1,7 +1,7 @@
 ﻿using Accord.MachineLearning.VectorMachines;
 using Accord.MachineLearning.VectorMachines.Learning;
 using Accord.Statistics.Kernels;
-using Microsoft.Extensions.Configuration;
+using Nexus.Party.Master.Categorizer.Save; 
 using Nexus.Party.Master.Categorizer.Models;
 using Nexus.Spotify.Client.Models;
 using System.Data;
@@ -13,7 +13,7 @@ public class MusicTrainner : MusicAnalizerBase
     readonly Dictionary<string, Trainning> results;
     readonly IEnumerable<MusicData>? dataset;
     readonly MulticlassSupportVectorLearning<Gaussian> teacher;
-    public MusicTrainner(IConfiguration config) : base(config)
+    public MusicTrainner() : base(new GenreConvert())
     {
         results = new Dictionary<string, Trainning>();
         teacher = new MulticlassSupportVectorLearning<Gaussian>()
@@ -25,13 +25,13 @@ public class MusicTrainner : MusicAnalizerBase
         };
     }
 
-    public async Task AddToTrainnigAsync(Track track, short[] genres)
+    public async Task AddToTrainnigAsync(Track track, string[] genres)
     {
         var stream = await DownloadAsync(track);
 
         var mfccs = CalculateMFCCs(stream);
 
-        results.Add(track.Id, new Trainning(genres, mfccs));
+        results.Add(track.Id, new Trainning(ConvertGenres(genres), mfccs));
     }
 
     public void Proccess()
@@ -64,9 +64,41 @@ public class MusicTrainner : MusicAnalizerBase
         EvaluateModel(machine, testInputs, testOutputs);
     }
 
+    public async Task SaveToFileAsync(string fileName)
+        => await SaveToStreamAsync(new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write));
+
+    public async Task SaveToStreamAsync(Stream stream)
+    {
+        using var fileSave = new StreamSave(stream, genreConvert, results);
+
+        await fileSave.SaveToStreamAsync();
+    }
+
+    #region Auxiliary
+    private short[] ConvertGenres(string[] genres)
+    {
+        short[] genresShort = new short[genres.Length];
+        for (int i = 0; i < genres.Length; i++)
+        {
+            string item = genres[i];
+            short genre;
+
+            try
+            {
+                genre = genreConvert.GetGenre(item);
+            }
+            catch (Exception)
+            {
+                genre = genreConvert.AddGenre(item);
+            }
+
+            genresShort[i] = genre;
+        }
+        return genresShort;
+    }
 
     // Método para avaliar o modelo usando o conjunto de teste
-    static void EvaluateModel(MultilabelSupportVectorMachine<Gaussian> machine, double[][] testInputs, int[] testOutputs)
+    private static void EvaluateModel(MultilabelSupportVectorMachine<Gaussian> machine, double[][] testInputs, int[] testOutputs)
     {
         //int correctPredictions = 0;
         //int totalPredictions = testInputs.Length;
@@ -83,15 +115,5 @@ public class MusicTrainner : MusicAnalizerBase
         //double accuracy = (double)correctPredictions / totalPredictions;
         //Console.WriteLine("Acurácia do modelo: " + (accuracy * 100) + "%");
     }
-}
-
-internal class MusicData
-{
-    public double[] Mfccs { get; set; }
-    public int GenreLabel { get; set; }
-
-    public MusicData(Trainning trainning)
-    {
-
-    }
+    #endregion
 }

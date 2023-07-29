@@ -1,17 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Nexus.Party.Master.Categorizer.Analizer;
-using Nexus.Spotify.Client;
 using System.Diagnostics;
 using System.Net;
 
-public class Program
-{
-    public static async Task Main()
-    {
-        var config = new ConfigurationBuilder()
-            .AddJsonFile(Path.Combine(Environment.CurrentDirectory, "appsettings.json"))
-            .Build();
+namespace Nexus.Spotify.Client;
 
+public static class Utils
+{
+    public static async Task<SpotifyClient> GetConsoleClientAsync(IConfiguration config)
+    {
         var spotifyConfig = config.GetSection("Spotify");
 
         string[] scopes = spotifyConfig.GetSection("Scopes")
@@ -31,13 +27,7 @@ public class Program
         var credential = await OAuthCredential
             .GetCredentialAsync(clientId, secret, GetCode(), scopes);
 
-        using SpotifyClient client = new(credential);
-
-        using MusicTrainner analizer = new(config);
-
-        var track = await client.GetTrackAsync("1nDgPqq5gsQince3gJJ6dQ");
-
-        await analizer.AddToTrainnigAsync(track, new short[] { 1, 3, 4 });
+        return new(credential);
     }
 
     private static string GetCode()
@@ -56,3 +46,4 @@ public class Program
         return ctx.Request.QueryString["code"] ?? string.Empty;
     }
 }
+

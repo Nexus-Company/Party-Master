@@ -17,13 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Client.Web", "C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorizer", "Categorizer", "{D9D36B28-BF80-4D8E-B835-B711ABEE2747}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer.Test", "Nexus.Party.Master.Categorizer.Test\Nexus.Party.Master.Categorizer.Test.csproj", "{06CE4999-0355-41DB-A276-77EA3D324D20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer.Test", "Categorizer\Nexus.Party.Master.Categorizer.Test\Nexus.Party.Master.Categorizer.Test.csproj", "{06CE4999-0355-41DB-A276-77EA3D324D20}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer", "Categorizer\Nexus.Party.Master.Categorizer\Nexus.Party.Master.Categorizer.csproj", "{D0C036A7-216D-4175-8617-542C2BD6E9F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Spotify.Client", "Nexus.Spotify.Client\Nexus.Spotify.Client.csproj", "{82D184B3-020E-449F-9DEF-44F92551B3A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Party.Master.Categorizer.Extractor", "Nexus.Party.Master.Categorizer.Extractor\Nexus.Party.Master.Categorizer.Extractor.csproj", "{3BD22F5D-BAEC-4730-BCB4-6602D9BA6883}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Party.Master.Categorizer.Extractor", "Categorizer\Nexus.Party.Master.Categorizer.Extractor\Nexus.Party.Master.Categorizer.Extractor.csproj", "{3BD22F5D-BAEC-4730-BCB4-6602D9BA6883}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
