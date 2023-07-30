@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Nexus.Spotify.Client.Models;
+﻿namespace Nexus.Spotify.Client.Models;
 
 public class Track : Model
 {
@@ -26,13 +24,27 @@ public class Track : Model
 
     public async Task DownloadPreviewAsync(Stream stream)
     {
-        var str = await SpotifyClient.HttpClient.GetStreamAsync(PreviewUrl);
-        await str.CopyToAsync(stream);
+        try
+        {
+            var str = await SpotifyClient.HttpClient.GetStreamAsync(PreviewUrl);
+            await str.CopyToAsync(stream);
+            stream.Position = 0;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 }
 
 public abstract class Model
 {
 
-    internal SpotifyClient SpotifyClient;
+    private SpotifyClient? spotifyClient;
+
+    internal SpotifyClient SpotifyClient
+    {
+        get => spotifyClient ?? throw new ArgumentException("O modelo não foi carregado anteriormente");
+        set => spotifyClient = value;
+    }
 }

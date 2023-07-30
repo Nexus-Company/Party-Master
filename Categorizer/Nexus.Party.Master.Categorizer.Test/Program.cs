@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Nexus.Party.Master.Categorizer.Analizer;
-using Nexus.Party.Master.Categorizer.Models;
 using Nexus.Spotify.Client;
-using System.Diagnostics;
-using System.Net;
+using Nexus.Spotify.Client.Models;
 
 public class Program
 {
@@ -15,10 +14,29 @@ public class Program
             .Build();
 
         using SpotifyClient client = await Utils.GetConsoleClientAsync(config);
+
+        string json = Console.ReadLine()!;
+
+        var load = JsonConvert.DeserializeObject<LoadData[]>(json);
+
         using MusicTrainner analizer = new();
 
-        var track = await client.GetTrackAsync("1nDgPqq5gsQince3gJJ6dQ");
+        foreach (var item in load)
+        {
+            var track = await client.GetTrackAsync(item.Id);
+            await analizer.AddToTrainnigAsync(track, item.Genres);
+        }
 
-        await analizer.AddToTrainnigAsync(track, new string[] { "funk" });
+        analizer.Proccess();
+        analizer.Trainnig();
+
+        await analizer.SaveToFileAsync(Path.Combine(Environment.CurrentDirectory, "output.mma"));
     }
+}
+
+
+public class LoadData
+{
+    public string Id { get; set; }
+    public string[] Genres { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using Accord.MachineLearning.VectorMachines;
 using Accord.MachineLearning.VectorMachines.Learning;
+using Accord.Math;
 using Accord.Statistics.Kernels;
 using NAudio.Wave;
 using Nexus.Party.Master.Categorizer.Models;
@@ -36,8 +37,6 @@ public abstract class MusicAnalizerBase : IDisposable
 
         var stream = new FileStream(tempFile, FileMode.CreateNew, FileAccess.ReadWrite);
         await track.DownloadPreviewAsync(stream);
-
-        stream.Position = 0;
 
         return stream;
     }
@@ -78,18 +77,15 @@ public abstract class MusicAnalizerBase : IDisposable
         return ConvertMfccsToDouble(mfccs.ToArray());
     }
 
-    private protected static MultilabelSupportVectorMachine<Gaussian> TrainSVMModel(double[][] inputs, int[] outputs)
+    private protected static MultilabelSupportVectorMachine<Gaussian> TrainSVMModel(double[][] inputs, bool[][] outputs)
     {
         // Treinar o modelo SVM multirrótulo com o dataset de treinamento
         var teacher = new MultilabelSupportVectorLearning<Gaussian>()
         {
-            Learner = (param) => new SequentialMinimalOptimization<Gaussian>()
-            {
-                Complexity = 100 // Valor do parâmetro de complexidade do SVM
-            }
+            Learner = (p) => new SequentialMinimalOptimization<Gaussian>()
         };
 
-        MultilabelSupportVectorMachine<Gaussian> machine = teacher.Learn(inputs, outputs);
+        var machine = teacher.Learn(inputs, outputs);
 
         return machine;
     }
@@ -100,19 +96,61 @@ public abstract class MusicAnalizerBase : IDisposable
     private static double[] ConvertMfccsToDouble(float[][] mfccs)
     {
         // Aqui você pode converter os coeficientes MFCCs de float[][] para double[]
-        double[] convertedMfccs = new double[mfccs.Length * mfccs[0].Length];
-        int index = 0;
+        double[][] convertedMfccs = new double[mfccs.Length][];
+
         for (int i = 0; i < mfccs.Length; i++)
         {
-            for (int j = 0; j < mfccs[i].Length; j++)
+            float[] floats = mfccs[i];
+            double[] doubles = new double[floats.Length];
+
+            for (int x = 0; x < floats.Length; x++)
             {
-                convertedMfccs[index] = mfccs[i][j];
-                index++;
+                doubles[x] = floats[x];
             }
+
+            convertedMfccs[i] = NormalizeData(doubles);
         }
-        return convertedMfccs;
+
+        return Matrix.Concatenate(convertedMfccs);
     }
 
+    static double[] NormalizeData(double[] data)
+    {
+        double maxPositive = double.MinValue;
+        double minNegative = double.MaxValue;
+
+        // Encontra o máximo valor positivo e o mínimo valor negativo
+        foreach (var value in data)
+        {
+            if (value > 0 && value > maxPositive)
+            {
+                maxPositive = value;
+            }
+            else if (value < 0 && value < minNegative)
+            {
+                minNegative = value;
+            }
+        }
+
+        // Calcula a amplitude dos valores para normalizar
+        double amplitude = Math.Max(maxPositive, -minNegative);
+
+        // Normaliza os dados
+        double[] normalizedData = new double[data.Length];
+        for (int i = 0; i < data.Length; i++)
+        {
+            if (data[i] > 0)
+            {
+                normalizedData[i] = data[i] / amplitude;
+            }
+            else
+            {
+                normalizedData[i] = data[i] / amplitude;
+            }
+        }
+
+        return normalizedData;
+    }
     #endregion
 
     public void Dispose()

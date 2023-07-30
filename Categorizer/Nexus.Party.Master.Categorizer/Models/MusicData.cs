@@ -3,38 +3,25 @@
 internal class MusicData
 {
     public double[] Mfccs { get; set; }
-    public int GenreLabel { get; set; }
+    public bool[] GenreLabel { get; set; }
 
-    public MusicData(Trainning trainning)
+    public MusicData(Trainning trainning, GenreConvert genreConvert)
     {
         Mfccs = trainning.Mfccs;
-        GenreLabel = CombineShortListToInt(trainning.Genres);
-    }
+        GenreLabel = new bool[genreConvert.keys.Count];
 
-    private static short[] SplitIntToShortList(int combinedValue)
-    {
-        List<short> shorts = new();
-
-        for (int i = 0; i < sizeof(int) * 8; i++)
+        for (int i = 0; i < GenreLabel.Length; i++)
         {
-            if ((combinedValue & (1 << i)) != 0)
+            short actual = genreConvert.keys.ElementAt(i).Value;
+            
+            if (trainning.Genres.Contains(actual))
             {
-                shorts.Add((short)i);
+                GenreLabel[i] = true;
+            }
+            else
+            {
+                GenreLabel[i] = false;
             }
         }
-
-        return shorts.ToArray();
-    }
-
-    private static int CombineShortListToInt(IEnumerable<short> shorts)
-    {
-        int combinedValue = 0;
-
-        foreach (short value in shorts)
-        {
-            combinedValue |= 1 << value;
-        }
-
-        return combinedValue;
     }
 }

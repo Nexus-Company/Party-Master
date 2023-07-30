@@ -1,28 +1,21 @@
 ﻿using Accord.MachineLearning.VectorMachines;
-using Accord.MachineLearning.VectorMachines.Learning;
 using Accord.Statistics.Kernels;
-using Nexus.Party.Master.Categorizer.Save; 
+using Nexus.Party.Master.Categorizer.Save;
 using Nexus.Party.Master.Categorizer.Models;
 using Nexus.Spotify.Client.Models;
 using System.Data;
+using Accord.Math;
 
 namespace Nexus.Party.Master.Categorizer.Analizer;
 
 public class MusicTrainner : MusicAnalizerBase
 {
     readonly Dictionary<string, Trainning> results;
-    readonly IEnumerable<MusicData>? dataset;
-    readonly MulticlassSupportVectorLearning<Gaussian> teacher;
+    IEnumerable<MusicData>? dataset;
+    MultilabelSupportVectorMachine<Gaussian>? machine;
     public MusicTrainner() : base(new GenreConvert())
     {
         results = new Dictionary<string, Trainning>();
-        teacher = new MulticlassSupportVectorLearning<Gaussian>()
-        {
-            Learner = (param) => new SequentialMinimalOptimization<Gaussian>()
-            {
-                Complexity = 100 // Valor do parâmetro de complexidade do SVM
-            }
-        };
     }
 
     public async Task AddToTrainnigAsync(Track track, string[] genres)
@@ -39,7 +32,9 @@ public class MusicTrainner : MusicAnalizerBase
         var data = new List<MusicData>();
 
         foreach (var track in results)
-            data.Add(new(track.Value));
+            data.Add(new(track.Value, genreConvert));
+
+        dataset = data.ToArray();
     }
 
     public void Trainnig()
@@ -47,21 +42,13 @@ public class MusicTrainner : MusicAnalizerBase
         if (dataset is null)
             throw new ArgumentException("Os dados de entrada devem ser processados anteriormente.");
 
-        int splitIndex = (int)(dataset.Count() * 0.8); // 80% para treinamento, 20% para teste
-        var trainingData = dataset.Take(splitIndex).ToList();
-        var testData = dataset.Skip(splitIndex).ToList();
-
-        // Converter os coeficientes MFCCs para double[] antes de treinar o modelo SVM
-        var trainingInputs = trainingData.Select(unit => unit.Mfccs).ToArray();
-        var trainingOutputs = trainingData.Select(unit => unit.GenreLabel).ToArray(); // Obter as classes multirrótulo
+        var trainingInputs = dataset.Select(unit => unit.Mfccs).ToArray();
+        var trainingOutputs = dataset.Select(unit => unit.GenreLabel).ToArray();
 
         // Treinamento do modelo SVM multirrótulo com o dataset de treinamento
-        var machine = TrainSVMModel(trainingInputs, trainingOutputs);
+        machine = TrainSVMModel(trainingInputs, trainingOutputs);
 
-        // Avaliar o modelo usando o conjunto de teste
-        var testInputs = testData.Select(unit => unit.Mfccs).ToArray();
-        var testOutputs = testData.Select(unit => unit.GenreLabel).ToArray(); // Obter as classes multirrótulo para o conjunto de teste
-        EvaluateModel(machine, testInputs, testOutputs);
+        var rst = machine.Decide(trainingInputs[3]);
     }
 
     public async Task SaveToFileAsync(string fileName)
@@ -97,23 +84,6 @@ public class MusicTrainner : MusicAnalizerBase
         return genresShort;
     }
 
-    // Método para avaliar o modelo usando o conjunto de teste
-    private static void EvaluateModel(MultilabelSupportVectorMachine<Gaussian> machine, double[][] testInputs, int[] testOutputs)
-    {
-        //int correctPredictions = 0;
-        //int totalPredictions = testInputs.Length;
-
-        //for (int i = 0; i < testInputs.Length; i++)
-        //{
-        //    int predictedLabels = machine.Decide(testOutputs);
-        //    if (predictedLabels.SequenceEqual(testOutputs[i]))
-        //    {
-        //        correctPredictions++;
-        //    }
-        //}
-
-        //double accuracy = (double)correctPredictions / totalPredictions;
-        //Console.WriteLine("Acurácia do modelo: " + (accuracy * 100) + "%");
-    }
+    // TODO: Criar módulo que evolui o modelo atual 
     #endregion
 }

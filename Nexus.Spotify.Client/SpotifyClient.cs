@@ -44,16 +44,33 @@ public class SpotifyClient : IDisposable
         return rst.Queue;
     }
 
-    public async Task<Track> GetTrackAsync(string id, CancellationToken? stoppingToken = null)
+    public async Task<Track> GetTrackAsync(string id, string market = "BR", CancellationToken? stoppingToken = null)
     {
         stoppingToken ??= CancellationToken.None;
-        var request = CreateRequest($"{SpotifyEndPoint}/tracks/{id}");
+        var request = CreateRequest($"{SpotifyEndPoint}/tracks/{id}?market={market}");
 
         var response = await HttpClient.SendAsync(request, stoppingToken.Value);
 
         string state = await response.Content.ReadAsStringAsync(stoppingToken.Value);
 
         return LoadModel(JsonConvert.DeserializeObject<Track>(state)!);
+    }
+
+    public async Task<IEnumerable<Playlist>> GetUserPlaylistAsync(int per_page = 50, CancellationToken? stoppingToken = null)
+    {
+        stoppingToken ??= CancellationToken.None;
+        var request = CreateRequest($"{SpotifyEndPoint}/me/playlists?limit={per_page}");
+
+        var response = await HttpClient.SendAsync(request, stoppingToken.Value);
+
+        string state = await response.Content.ReadAsStringAsync(stoppingToken.Value);
+
+        var rst = JsonConvert.DeserializeObject<PlaylistsResult>(state)!;
+
+        foreach (var item in rst.Items)
+            LoadModel(item);
+
+        return rst.Items;
     }
 
     internal HttpRequestMessage CreateRequest(string uri)
@@ -76,8 +93,16 @@ public class SpotifyClient : IDisposable
         md.SpotifyClient = this;
         return md;
     }
-    private class QueueResult
-    {
-        public IEnumerable<Track> Queue { get; set; }
-    }
 }
+
+#region Results
+class QueueResult
+{
+    public IEnumerable<Track> Queue { get; set; }
+}
+
+class PlaylistsResult
+{
+    public IEnumerable<Playlist> Items { get; set; }
+}
+#endregion

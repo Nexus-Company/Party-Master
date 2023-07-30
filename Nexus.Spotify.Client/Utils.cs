@@ -37,13 +37,25 @@ public static class Utils
         if (!string.IsNullOrEmpty(uri.PathAndQuery))
             uri = new(uri.OriginalString.Replace(uri.PathAndQuery, "/"));
 
-        HttpListener listner = new();
+        using HttpListener listner = new();
         listner.Prefixes.Add(uri.AbsoluteUri);
         listner.Start();
 
         var ctx = listner.GetContext();
 
-        return ctx.Request.QueryString["code"] ?? string.Empty;
+        var code = ctx.Request.QueryString["code"] ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(code))
+        {
+            var fs = File.OpenRead(Path.Combine(Environment.CurrentDirectory, "Resources/EndLogin.html"));
+            ctx.Response.ContentType = "text/html; charset=\"utf-8\"";
+            fs.CopyTo(ctx.Response.OutputStream);
+            ctx.Response.Close();
+        }
+
+        listner.Close();
+
+        return code;
     }
 }
 
