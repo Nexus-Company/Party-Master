@@ -11,7 +11,7 @@ namespace Nexus.Party.Master.Categorizer.Analizer;
 public class MusicTrainner : MusicAnalizerBase
 {
     readonly Dictionary<string, Trainning> results;
-    IEnumerable<MusicData>? dataset;
+   
     MultilabelSupportVectorMachine<Gaussian>? machine;
     public MusicTrainner() : base(new GenreConvert())
     {
@@ -47,8 +47,6 @@ public class MusicTrainner : MusicAnalizerBase
 
         // Treinamento do modelo SVM multirrótulo com o dataset de treinamento
         machine = TrainSVMModel(trainingInputs, trainingOutputs);
-
-        var rst = machine.Decide(trainingInputs[3]);
     }
 
     public async Task SaveToFileAsync(string fileName)

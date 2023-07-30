@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Nexus.Party.Master.Categorizer.Analizer;
 using Nexus.Spotify.Client;
-using Nexus.Spotify.Client.Models;
 
 public class Program
 {
@@ -30,10 +29,13 @@ public class Program
         analizer.Proccess();
         analizer.Trainnig();
 
-        await analizer.SaveToFileAsync(Path.Combine(Environment.CurrentDirectory, "output.mma"));
+        string outputFile = Path.Combine(Environment.CurrentDirectory, @".\Resources\Output.mma");
+
+        await analizer.SaveToFileAsync(outputFile);
+
+        var file = MusicAnalizer.ReadFile(outputFile);
     }
 }
-
 
 public class LoadData
 {

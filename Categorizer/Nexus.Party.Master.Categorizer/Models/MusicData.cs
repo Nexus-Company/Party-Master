@@ -5,6 +5,12 @@ internal class MusicData
     public double[] Mfccs { get; set; }
     public bool[] GenreLabel { get; set; }
 
+    public MusicData(double[] mfccs, bool[] genreLabel)
+    {
+        Mfccs = mfccs;
+        GenreLabel = genreLabel;
+    }
+
     public MusicData(Trainning trainning, GenreConvert genreConvert)
     {
         Mfccs = trainning.Mfccs;

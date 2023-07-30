@@ -15,6 +15,7 @@ public abstract class MusicAnalizerBase : IDisposable
     public Guid Id { get; private set; }
     private readonly string TempPath;
     private protected readonly GenreConvert genreConvert;
+    private protected IEnumerable<MusicData>? dataset;
     internal MusicAnalizerBase(GenreConvert genreConvert)
     {
         Id = Guid.NewGuid();

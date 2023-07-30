@@ -1,5 +1,6 @@
 ﻿using Nexus.Party.Master.Categorizer.Models;
 using System.Text;
+using System;
 
 namespace Nexus.Party.Master.Categorizer.Save;
 
@@ -34,24 +35,19 @@ internal class StreamSave : IDisposable
         buffer = BitConverter.GetBytes(results.Count);
 
         await output.WriteAsync(buffer);
-
-        await output.FlushAsync();
     }
 
     private async Task SaveToGenreAsync()
     {
         byte[] buffer;
-        byte[] aux;
         foreach (var item in genreConvert.keys)
         {
             buffer = Encoding.ASCII.GetBytes(item.Key);
-            aux = BitConverter.GetBytes(buffer.Length);
 
-            await output.WriteAsync(aux);
+            await output.WriteAsync(BitConverter.GetBytes(item.Value));
+            await output.WriteAsync(BitConverter.GetBytes(buffer.Length));
             await output.WriteAsync(buffer);
         }
-
-        await output.FlushAsync();
     }
 
     private async Task SaveTrainnigAsync(Trainning trainning)
@@ -69,8 +65,6 @@ internal class StreamSave : IDisposable
         foreach (var item in trainning.Mfccs)
             await output.WriteAsync(
                 BitConverter.GetBytes(item));
-
-        await output.FlushAsync();
     }
 
     public void Dispose()

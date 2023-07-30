@@ -6,7 +6,7 @@ Header
 
 Genres 
 
-4 (Integer of string bytes count) | ? (string bytes of genre name) | 2 (Short of genre value)
+2 (Short of genre value) | 4 (Integer of string bytes count) | ? (string bytes of genre name)
 
 -------------------------------------------------------------------------------------------------
 
