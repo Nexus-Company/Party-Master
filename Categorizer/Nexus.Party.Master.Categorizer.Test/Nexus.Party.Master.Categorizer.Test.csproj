@@ -35,4 +35,10 @@
     <ProjectReference Include="..\Nexus.Party.Master.Categorizer\Nexus.Party.Master.Categorizer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="teste.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

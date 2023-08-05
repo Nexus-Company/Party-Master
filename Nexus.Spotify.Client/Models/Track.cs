@@ -21,6 +21,7 @@ public class Track : Model
     [JsonProperty("duration_ms")]
     public int Duration { get; set; }
     public Album Album { get; set; }
+    public Restrictions Restrictions { get; set; }
 
     public async Task DownloadPreviewAsync(Stream stream)
     {
@@ -35,6 +36,11 @@ public class Track : Model
             throw ex;
         }
     }
+}
+
+public class Restrictions
+{
+    public string Reason { get; set; }
 }
 
 public abstract class Model

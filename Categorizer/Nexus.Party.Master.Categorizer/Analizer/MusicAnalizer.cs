@@ -26,12 +26,23 @@ public class MusicAnalizer : MusicAnalizerBase
         return sr.ReadToStream();
     }
 
-    public async Task<string> GetGenrAsync(Track track)
+    public async Task<string[]> GetGenreAsync(Track track)
     {
         var str = await DownloadAsync(track);
 
         var mfccs = CalculateMFCCs(str);
 
-        throw new NotImplementedException();
+        bool[] results = machine.Decide(mfccs);
+
+        List<string> result = new List<string>();
+
+        for (int i = 0; i < results.Length; i++)
+        {
+            if (results[i])
+                result.Add(genreConvert[i]);
+
+        }
+
+        return result.ToArray();
     }
 }

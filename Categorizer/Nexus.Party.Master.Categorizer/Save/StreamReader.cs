@@ -17,7 +17,7 @@ internal class StreamReader : IDisposable
     {
         var genres = ReadHeader(out int results);
 
-        var inputs = ReadResults(results, genres.keys.Count);
+        var inputs = ReadResults(results, genres.Count);
 
         return new MusicAnalizer(genres, inputs);
     }
@@ -61,6 +61,10 @@ internal class StreamReader : IDisposable
         for (int i = 0; i < count; i++)
         {
             #region Get Music Data
+            buffer = new byte[16];
+            input.Read(buffer);
+            Guid id = new(buffer);
+
             buffer = new byte[sizeof(int) * 2];
 
             input.Read(buffer);
@@ -88,7 +92,7 @@ internal class StreamReader : IDisposable
             }
             #endregion
 
-            results.Add(new MusicData(mfccs, GetOutput(genres, genresTotal)));
+            results.Add(new MusicData(id, mfccs, GetOutput(genres, genresTotal)));
         }
 
         return results;

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Nexus.Party.Master.Categorizer.Analizer;
 using Nexus.Spotify.Client;
+using Nexus.Spotify.Client.Models;
 
 public class Program
 {
@@ -14,26 +15,46 @@ public class Program
 
         using SpotifyClient client = await Utils.GetConsoleClientAsync(config);
 
-        string json = Console.ReadLine()!;
+        string json = await File.ReadAllTextAsync(Path.Combine(Environment.CurrentDirectory, "teste.json"));
 
         var load = JsonConvert.DeserializeObject<LoadData[]>(json);
 
         using MusicTrainner analizer = new();
 
+        List<Task<Track>> tasks = new();
         foreach (var item in load)
         {
-            var track = await client.GetTrackAsync(item.Id);
-            await analizer.AddToTrainnigAsync(track, item.Genres);
+            var task = client.GetTrackAsync(item.Id);
+            task.ContinueWith((task, obj) =>
+            {
+                if (task.Result.Restrictions != null)
+                    return; 
+
+                analizer.AddToTrainning(task.Result, item.Genres);
+            }, null);
+            tasks.Add(task);
         }
 
-        analizer.Proccess();
+        await Task.WhenAll(tasks.ToArray());
+        await analizer.ProccessAsync();
         analizer.Trainnig();
 
         string outputFile = Path.Combine(Environment.CurrentDirectory, @".\Resources\Output.mma");
 
         await analizer.SaveToFileAsync(outputFile);
 
-        var file = MusicAnalizer.ReadFile(outputFile);
+        var machineAnalizer = MusicAnalizer.ReadFile(outputFile);
+
+        Console.Clear();
+        Console.Write("Escreva o Json de músicas para testar: ");
+        json = Console.ReadLine()!;
+        load = JsonConvert.DeserializeObject<LoadData[]>(json);
+
+        foreach (var item in load)
+        {
+            var track = await client.GetTrackAsync(item.Id);
+            var rst = await machineAnalizer.GetGenreAsync(track);
+        }
     }
 }
 

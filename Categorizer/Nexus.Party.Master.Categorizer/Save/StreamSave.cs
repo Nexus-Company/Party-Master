@@ -20,7 +20,7 @@ internal class StreamSave : IDisposable
     {
         await SaveHeaderAsync();
 
-        await SaveToGenreAsync();
+        genreConvert.SaveToStream(output);
 
         foreach (var item in results)
             await SaveTrainnigAsync(item.Value);
@@ -28,7 +28,7 @@ internal class StreamSave : IDisposable
 
     private async Task SaveHeaderAsync()
     {
-        byte[] buffer = BitConverter.GetBytes(genreConvert.keys.Count);
+        byte[] buffer = BitConverter.GetBytes(genreConvert.Count);
 
         await output.WriteAsync(buffer);
 
@@ -37,21 +37,11 @@ internal class StreamSave : IDisposable
         await output.WriteAsync(buffer);
     }
 
-    private async Task SaveToGenreAsync()
-    {
-        byte[] buffer;
-        foreach (var item in genreConvert.keys)
-        {
-            buffer = Encoding.ASCII.GetBytes(item.Key);
-
-            await output.WriteAsync(BitConverter.GetBytes(item.Value));
-            await output.WriteAsync(BitConverter.GetBytes(buffer.Length));
-            await output.WriteAsync(buffer);
-        }
-    }
-
     private async Task SaveTrainnigAsync(Trainning trainning)
     {
+        await output.WriteAsync(
+            trainning.Id.ToByteArray());
+        
         await output.WriteAsync(
             BitConverter.GetBytes(trainning.Genres.Length));
 

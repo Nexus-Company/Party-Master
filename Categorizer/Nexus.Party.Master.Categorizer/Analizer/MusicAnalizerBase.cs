@@ -25,7 +25,7 @@ public abstract class MusicAnalizerBase : IDisposable
         if (!Directory.Exists(TempPath))
             Directory.CreateDirectory(TempPath);
 
-        TempPath = Path.Combine(TempPath, Id.ToString());
+        TempPath = Path.Combine(TempPath, "Previews");
 
         if (!Directory.Exists(TempPath))
             Directory.CreateDirectory(TempPath);
@@ -36,8 +36,12 @@ public abstract class MusicAnalizerBase : IDisposable
     {
         string tempFile = Path.Combine(TempPath, $"{track.Id}.mp3");
 
-        var stream = new FileStream(tempFile, FileMode.CreateNew, FileAccess.ReadWrite);
-        await track.DownloadPreviewAsync(stream);
+        bool fileExists = File.Exists(tempFile);
+
+        var stream = new FileStream(tempFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+
+        if (!fileExists)
+            await track.DownloadPreviewAsync(stream);
 
         return stream;
     }
@@ -78,14 +82,32 @@ public abstract class MusicAnalizerBase : IDisposable
         return ConvertMfccsToDouble(mfccs.ToArray());
     }
 
-    private protected static MultilabelSupportVectorMachine<Gaussian> TrainSVMModel(double[][] inputs, bool[][] outputs)
+    private protected MultilabelSupportVectorMachine<Gaussian> TrainSVMModel(double[][] inputs, bool[][] outputs)
     {
-        // Treinar o modelo SVM multirrótulo com o dataset de treinamento
+        int inpt = inputs[0].Length;
+        int @out = outputs[0].Length;
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            double[] input = inputs[i];
+            bool[] output = outputs[i];
+
+            if (@out != output.Length || 
+                inpt != input.Length)
+            {
+
+            }
+        }
+
+        // Create a new Linear kernel
+        // Create the Multi-class learning algorithm for the machine
         var teacher = new MultilabelSupportVectorLearning<Gaussian>()
         {
+            // Configure the learning algorithm to use SMO to train the
+            //  underlying SVMs in each of the binary class subproblems.
             Learner = (p) => new SequentialMinimalOptimization<Gaussian>()
         };
 
+        // Run the learning algorithm
         var machine = teacher.Learn(inputs, outputs);
 
         return machine;

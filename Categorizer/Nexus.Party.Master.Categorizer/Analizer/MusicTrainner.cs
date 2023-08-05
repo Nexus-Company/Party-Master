@@ -5,30 +5,68 @@ using Nexus.Party.Master.Categorizer.Models;
 using Nexus.Spotify.Client.Models;
 using System.Data;
 using Accord.Math;
+using System.Collections.Concurrent;
 
 namespace Nexus.Party.Master.Categorizer.Analizer;
 
 public class MusicTrainner : MusicAnalizerBase
 {
-    readonly Dictionary<string, Trainning> results;
-   
+    readonly ConcurrentDictionary<string, Trainning> results;
+    readonly List<Task> tasks;
+
     MultilabelSupportVectorMachine<Gaussian>? machine;
     public MusicTrainner() : base(new GenreConvert())
     {
-        results = new Dictionary<string, Trainning>();
+        results = new();
+        tasks = new();
+    }
+    int mfccsCount = 0;
+    public void AddToTrainning(Track track, string[] genres)
+    {
+        async void Add(object? obj)
+        {
+            try
+            {
+                var trainning = (AddTrainning)obj!;
+                var stream = await DownloadAsync(trainning.Track);
+
+                var mfccs = CalculateMFCCs(stream);
+
+                if (mfccsCount == 0)
+                    mfccsCount = mfccs.Length;
+
+                if (mfccsCount != mfccs.Length)
+                    throw new ArgumentException("Track Mfccs length wrong");
+
+                if (results.TryGetValue(trainning.Track.Id, out _))
+                {
+                    results[trainning.Track.Id] = new Trainning(ConvertGenres(trainning.Genres), mfccs);
+                    Console.WriteLine($"Music id \"0{trainning.Track.Id}\" rewrite genres.");
+                }
+                else
+                    results.TryAdd(trainning.Track.Id, new Trainning(ConvertGenres(trainning.Genres), mfccs));
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        tasks.Add(new Task(Add, new AddTrainning(track, genres)));
     }
 
-    public async Task AddToTrainnigAsync(Track track, string[] genres)
+    public async Task ProccessAsync()
     {
-        var stream = await DownloadAsync(track);
+        foreach (var task in tasks)
+            if (task.Status == TaskStatus.Created)
+                task.Start();
 
-        var mfccs = CalculateMFCCs(stream);
+        await Task.WhenAll(tasks);
 
-        results.Add(track.Id, new Trainning(ConvertGenres(genres), mfccs));
-    }
+        // Realize a coleta de lixo após a conclusão das tarefas
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
 
-    public void Proccess()
-    {
         var data = new List<MusicData>();
 
         foreach (var track in results)
@@ -70,11 +108,11 @@ public class MusicTrainner : MusicAnalizerBase
 
             try
             {
-                genre = genreConvert.GetGenre(item);
+                genre = genreConvert.Get(item);
             }
             catch (Exception)
             {
-                genre = genreConvert.AddGenre(item);
+                genre = genreConvert.Add(item);
             }
 
             genresShort[i] = genre;
@@ -84,4 +122,17 @@ public class MusicTrainner : MusicAnalizerBase
 
     // TODO: Criar módulo que evolui o modelo atual 
     #endregion
+
+
+    private struct AddTrainning
+    {
+        public AddTrainning(Track track, string[] genres)
+        {
+            Track = track ?? throw new ArgumentNullException(nameof(track));
+            Genres = genres ?? throw new ArgumentNullException(nameof(genres));
+        }
+
+        public Track Track { get; set; }
+        public string[] Genres { get; set; }
+    }
 }
