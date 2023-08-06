@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Nexus.Spotify.Client;
 using Nexus.Spotify.Client.Models;
 
-namespace Nexus.Party.Master.Domain;
+namespace Nexus.Party.Master.Domain.Spotify;
 
 public partial class SyncService : BackgroundService
 {

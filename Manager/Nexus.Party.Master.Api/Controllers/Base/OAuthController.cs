@@ -8,7 +8,7 @@ public partial class OAuthController : BaseController
     private protected string[] Scopes { get; set; }
 
     private protected OAuthController(IConfiguration config, string configKey)
-        : base()
+        : base(config)
     {
         Exception error =
             new ArgumentException("It's not possible start this application without Spotify ClientId, ClientSecret and Scopes.");

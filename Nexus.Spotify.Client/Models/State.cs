@@ -6,7 +6,7 @@ public class State
     public bool IsPlaying { get; set; }
 
     public long TimeStamp { get; set; }
-    
+
     [JsonProperty("progress_ms")]
     public int ProgressMilisseconds { get; set; }
 
