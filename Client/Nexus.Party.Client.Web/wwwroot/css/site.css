@@ -47,8 +47,29 @@ body[data-bs-theme=dark] .card {
     opacity: 0;
 }
 
+.danger {
+    color: var(--bs-danger) !important;
+    cursor: pointer;
+}
+
 .hiding {
     animation: Hide 1s ease;
+}
+
+li .large {
+    animation: slide-text 7s ease-in-out infinite; /* Aplica a animação ao texto */
+}
+
+main,
+footer,
+header {
+    transition: .6s;
+}
+
+.modal-open main,
+.modal-open footer,
+.modal-open header {
+    filter: blur(.2rem);
 }
 
 @keyframes Hiding {
@@ -61,4 +82,24 @@ body[data-bs-theme=dark] .card {
         opacity: 0;
         display: none;
     }
+}
+
+@keyframes slide-text {
+    0% {
+        transform: translateX(100%);
+    }
+
+    50% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+
+input {
+   background: var(--bs-card-bg);
+   backdrop-filter: blur(.5rem);
 }

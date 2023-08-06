@@ -6,7 +6,7 @@ namespace Nexus.Party.Master.Domain.Spotify
     public partial class SyncService
     {
         const string PlayerUrl = "https://api.spotify.com/v1/me/player";
-        public IEnumerable<Track> Queue { get; set; }
+        public IEnumerable<Track> Queue { get; set; } = Array.Empty<Track>();
 
         private protected async Task<State> GetStatus(CancellationToken stoppingToken)
         {
@@ -43,7 +43,7 @@ namespace Nexus.Party.Master.Domain.Spotify
         private class QueueResult
         {
 
-            public IEnumerable<Track> Queue { get; set; }
+            public IEnumerable<Track> Queue { get; set; } = Array.Empty<Track>();
         }
     }
 }

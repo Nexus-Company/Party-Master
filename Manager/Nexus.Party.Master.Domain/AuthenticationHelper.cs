@@ -82,7 +82,7 @@ public class AuthenticationHelper
                          where acc.Id == auth.AccountId
                          select acc).FirstOrDefaultAsync();
 
-        return null;
+        return account;
     }
 
     /// <summary>

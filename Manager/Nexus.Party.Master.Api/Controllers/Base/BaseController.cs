@@ -10,7 +10,7 @@ namespace Nexus.Party.Master.Api.Controllers.Base;
 [EnableCors]
 [RequireHttps]
 [Route("api/[controller]")]
-public class BaseController : ControllerBase
+public abstract class BaseController : ControllerBase
 {
     public static readonly string AuthConnString = @$"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Databases\Authentication.db";
 

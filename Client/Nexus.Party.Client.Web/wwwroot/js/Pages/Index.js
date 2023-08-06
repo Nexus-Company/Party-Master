@@ -1,9 +1,9 @@
 ﻿const sckt = new WebSocket(`${scktURl}Player/Connect`);
-var actual, playerList, showing;
+var actual, playerList, showing, account;
 
 $(document).ready(async function () {
     sckt.onmessage = scktMessage;
-    setActual(await $.get(`${apiUrl}Player/Actual`));
+    await setActual();
 });
 
 function scktMessage(obj) {
@@ -11,14 +11,20 @@ function scktMessage(obj) {
     setActual(state);
 }
 
-function setActual(msc) {
-    $('.player #name').text(msc.name);
-    $('.player #img').attr('src', msc.album.images[0].url);
+async function setActual() {
+    try {
+        let msc = await $.get(`${apiUrl}Player/Actual`);
 
-    addArtists(msc.artists, $('.player #artists'));
+        $('.player #name').text(msc.name);
+        $('.player #img').attr('src', msc.album.images[0].url);
 
-    actual = msc;
-    updatePlayerList();
+        addArtists(msc.artists, $('.player #artists'));
+
+        actual = msc;
+        updatePlayerList();
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 async function updatePlayerList() {

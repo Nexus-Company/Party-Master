@@ -33,20 +33,32 @@
     </div>
 </div>
 
-<div class="search">
-    <input type="text" id="schKey" />
-
-    <ol class="search-list" id="schResult">
-    </ol>
-</div>
-
 @section Scripts{
     <link rel="stylesheet" href="~/css/Pages/Index.css" asp-append-version="true" />
     <script type="text/javascript" src="@Url.Content("js/Pages/Index.js")" asp-append-version="true"></script>
 }
 
-@*@section Header {
-    <!-- Inclua os arquivos CSS e JavaScript do bootstrap-slider -->
-    <link rel="stylesheet" href="~/lib/bootstrap-slider/css/bootstrap-slider.min.css" asp-append-version="true" />
-    <script type="text/javascript" src="~/lib/bootstrap-slider/bootstrap-slider.min.js" asp-append-version="true"></script>
-            }*@
+@section Modals{
+    <div class="modal" tabindex="-1" role="dialog" id="modalSearch">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar musica</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="schKey" />
+
+                    <ol class="search-list" id="schResult">
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Adicionar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

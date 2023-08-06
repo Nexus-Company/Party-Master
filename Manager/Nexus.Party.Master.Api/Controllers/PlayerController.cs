@@ -42,11 +42,15 @@ public class PlayerController : UseSyncController
 
     [HttpGet("Actual")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.ServiceUnavailable)]
     [ProducesResponseType(typeof(Track), (int)HttpStatusCode.OK)]
     public IActionResult ActualAsync()
     {
         if (SyncService.Track is not null)
             return Ok(SyncService.Track);
+
+        if (SyncService.Online)
+            return StatusCode(HttpStatusCode.ServiceUnavailable);
 
         return NoContent();
     }

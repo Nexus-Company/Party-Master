@@ -29,10 +29,30 @@
                             <a class="nav-link" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+
+                    <ul class="navbar-nav" id="loginPanel">
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="redirectToLogin()">Login</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav user-panel invisible" id="userPanel">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="/img/crystal_contour.svg" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item disabled">Seu usuário: <strong id="shortName"> Não autenticado</strong></a></li>
+                                <li><a class="dropdown-item" href="~/Account/Profile">Meu Perfil</a></li>
+                                <li><a class="dropdown-item danger" onclick="redirectToLogout()">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -41,9 +61,33 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Party Client - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2023 - Nexus Company - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
+
+    <div class="modals">
+        <div class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Modal body text goes here.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @RenderSection("Modals", false)
+    </div>
 
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
