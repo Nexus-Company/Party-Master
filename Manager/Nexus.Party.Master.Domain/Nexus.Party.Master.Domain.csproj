@@ -23,4 +23,12 @@
     <ProjectReference Include="..\Nexus.Party.Master.Dal\Nexus.Party.Master.Dal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Nexus.Spotify.Client\Nexus.Spotify.Client.csproj" />
+  </ItemGroup>
+
 </Project>

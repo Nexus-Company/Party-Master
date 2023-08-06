@@ -15,6 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{5BAAC8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Client.Web", "Client\Nexus.Party.Client.Web\Nexus.Party.Client.Web.csproj", "{B6683C2C-A91B-4954-8303-9E2478D1F136}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorizer", "Categorizer", "{D9D36B28-BF80-4D8E-B835-B711ABEE2747}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer.Test", "Nexus.Party.Master.Categorizer.Test\Nexus.Party.Master.Categorizer.Test.csproj", "{06CE4999-0355-41DB-A276-77EA3D324D20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer", "Categorizer\Nexus.Party.Master.Categorizer\Nexus.Party.Master.Categorizer.csproj", "{D0C036A7-216D-4175-8617-542C2BD6E9F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Spotify.Client", "Nexus.Spotify.Client\Nexus.Spotify.Client.csproj", "{82D184B3-020E-449F-9DEF-44F92551B3A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +45,18 @@ Global
 		{B6683C2C-A91B-4954-8303-9E2478D1F136}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6683C2C-A91B-4954-8303-9E2478D1F136}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6683C2C-A91B-4954-8303-9E2478D1F136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06CE4999-0355-41DB-A276-77EA3D324D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06CE4999-0355-41DB-A276-77EA3D324D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06CE4999-0355-41DB-A276-77EA3D324D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06CE4999-0355-41DB-A276-77EA3D324D20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0C036A7-216D-4175-8617-542C2BD6E9F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0C036A7-216D-4175-8617-542C2BD6E9F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0C036A7-216D-4175-8617-542C2BD6E9F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0C036A7-216D-4175-8617-542C2BD6E9F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +66,8 @@ Global
 		{172CD874-6BA0-47AA-A90D-CA4D53F1676A} = {91B8CD78-8343-4209-A66A-95C45B9102C5}
 		{E6EC0432-5782-4A25-86ED-2D71BF002F41} = {91B8CD78-8343-4209-A66A-95C45B9102C5}
 		{B6683C2C-A91B-4954-8303-9E2478D1F136} = {5BAAC839-9C17-49F8-B0D4-92DC304BDF5C}
+		{06CE4999-0355-41DB-A276-77EA3D324D20} = {D9D36B28-BF80-4D8E-B835-B711ABEE2747}
+		{D0C036A7-216D-4175-8617-542C2BD6E9F5} = {D9D36B28-BF80-4D8E-B835-B711ABEE2747}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {822277FD-BF23-4AE1-91E1-4E525C5923C7}
