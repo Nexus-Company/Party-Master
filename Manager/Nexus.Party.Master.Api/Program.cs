@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<SyncService>();
-builder.Services.AddHostedService(provider => provider.GetService<SyncService>());
+builder.Services.AddHostedService(provider => provider.GetService<SyncService>()!);
 
 var app = builder.Build();
 var confg = app.Configuration;

@@ -14,7 +14,7 @@ public partial class SyncService : BackgroundService
     public event NewMusic? MusicChange;
     public SpotifyClient? SpotifyClient { get; set; }
     public Track? Track { get; private set; }
-    public IEnumerable<Track> Queue { get; private set; }
+    public IEnumerable<Track> Queue { get; private set; } = Array.Empty<Track>();
     public bool Online { get; private set; }
 
     public SyncService(ILogger<SyncService> logger)
