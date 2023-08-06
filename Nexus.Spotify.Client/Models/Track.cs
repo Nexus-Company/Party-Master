@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Nexus.Spotify.Client.Models;
+﻿namespace Nexus.Spotify.Client.Models;
 
 public class Track : Model
 {

@@ -1,12 +1,22 @@
-﻿const sckt = new WebSocket(`${scktURl}Player/Connect`);
-var actual, playerList, showing, account;
+﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`);
+var actual, playerList, showing, account, interactSckt;
 
 $(document).ready(async function () {
-    sckt.onmessage = scktMessage;
+    playerSckt.onmessage = playerScktMessage;
     await setActual();
+    if (account != undefined) {
+        interactSckt = new WebSocket(`${scktURl}Interact/Connect`);
+        interactSckt.onmessage = interactScktMessage;
+    }
 });
 
-function scktMessage(obj) {
+function interactScktMessage(obj) {
+    let state = JSON.parse(obj);
+
+    console.log(state);
+}
+
+function playerScktMessage(obj) {
     let state = JSON.parse(obj.data)
     setActual(state);
 }
@@ -130,4 +140,14 @@ async function musicPlayClick(event) {
         console.log('music end');
     }
     await showing.play();
+}
+
+async function voteSkip() {
+    await $.ajax({
+        type: 'POST',
+        url: `${apiUrl}Interact/Vote/Skip`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
 }

@@ -1,19 +1,22 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nexus.Party.Master.Dal;
 using Nexus.Spotify.Client;
 using Nexus.Spotify.Client.Models;
 
-namespace Nexus.Party.Master.Domain.Spotify;
+namespace Nexus.Party.Master.Domain.Services;
 
 public partial class SyncService : BackgroundService
 {
     private readonly ILogger<SyncService> _logger;
+    private readonly InteractContext interContext;
 
     public delegate void NewMusic(object sender, EventArgs args);
 
     public event NewMusic? MusicChange;
     public SpotifyClient? SpotifyClient { get; set; }
     public Track? Track { get; private set; }
+    public DateTime? Started { get; set; }
     public IEnumerable<Track> Queue { get; private set; } = Array.Empty<Track>();
     public bool Online { get; private set; }
 
@@ -21,6 +24,7 @@ public partial class SyncService : BackgroundService
     {
         _logger = logger;
         Queue = new List<Track>();
+        interContext = new InteractContext();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,7 +40,6 @@ public partial class SyncService : BackgroundService
             }
 
             await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken);
-
             try
             {
                 var status = await SpotifyClient.GetStatusAsync(stoppingToken);
@@ -62,12 +65,13 @@ public partial class SyncService : BackgroundService
                 Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
 
                 MusicChange?.Invoke(status!.Item, null!);
-
                 Track = status.Item;
+                Started = DateTime.UtcNow;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Online = false;
+                MusicChange = null;
             }
         }
     }

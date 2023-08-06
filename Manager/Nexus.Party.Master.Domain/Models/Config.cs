@@ -1,4 +1,4 @@
-﻿namespace Nexus.Party.Master.Api.Models;
+﻿namespace Nexus.Party.Master.Domain.Models;
 
 public class Config
 {

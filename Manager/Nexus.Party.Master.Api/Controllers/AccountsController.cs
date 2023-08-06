@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Nexus.Party.Master.Api.Models;
+using System.Net;
 
 namespace Nexus.Party.Master.Api.Controllers;
 
@@ -10,8 +11,8 @@ public class AccountsController : BaseController
     }
 
     [HttpGet("Me")]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(AccountResult), (int)HttpStatusCode.OK)]
     public IActionResult Me()
-    {
-        return Ok(User);
-    }
+        => Ok(new AccountResult(User!));
 }

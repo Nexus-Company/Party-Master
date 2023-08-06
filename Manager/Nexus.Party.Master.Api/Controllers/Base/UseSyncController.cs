@@ -1,14 +1,16 @@
-﻿using Nexus.Party.Master.Domain.Spotify;
+﻿using Nexus.Party.Master.Domain.Services;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;
 
 public class UseSyncController : BaseController
 {
-    private protected readonly SyncService SyncService;
+    private protected readonly SyncService syncService;
+    private protected readonly InteractService interactService;
     private protected UseSyncController(IConfiguration config, IServiceProvider serviceProvider)
         : base(config)
     {
-        SyncService = serviceProvider.GetService<SyncService>()!;
+        syncService = serviceProvider.GetService<SyncService>()!;
+        interactService = serviceProvider.GetService<InteractService>()!;
     }
 }
 

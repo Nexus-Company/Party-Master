@@ -1,4 +1,6 @@
 ﻿using Nexus.Spotify.Client;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nexus.Party.Master.Api.OAuth.Controllers;
 
