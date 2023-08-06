@@ -1,6 +1,6 @@
 ﻿namespace Nexus.Spotify.Client.Models;
 
-public class State
+public class PlayerState : Model
 {
     [JsonProperty("is_playing")]
     public bool IsPlaying { get; set; }
@@ -12,4 +12,13 @@ public class State
 
     [JsonProperty("item")]
     public Track Item { get; set; }
+
+
+    public async Task SkipAsync()
+    {
+        var request = client.CreateRequest($"{SpotifyClient.PlayerUrl}/next");
+        request.Method = HttpMethod.Post;
+
+        await client.HttpClient.SendAsync(request);
+    }
 }

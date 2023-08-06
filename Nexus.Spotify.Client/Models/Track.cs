@@ -24,7 +24,7 @@ public class Track : Model
 
     public async Task DownloadPreviewAsync(Stream stream)
     {
-        var str = await SpotifyClient.HttpClient.GetStreamAsync(PreviewUrl);
+        var str = await client.HttpClient.GetStreamAsync(PreviewUrl);
         await str.CopyToAsync(stream);
     }
 }
@@ -32,5 +32,5 @@ public class Track : Model
 public abstract class Model
 {
 
-    internal SpotifyClient SpotifyClient;
+    internal SpotifyClient client;
 }

@@ -15,6 +15,7 @@ public partial class SyncService : BackgroundService
 
     public event NewMusic? MusicChange;
     public SpotifyClient? SpotifyClient { get; set; }
+    public PlayerState? Player { get; set; }
     public Track? Track { get; private set; }
     public DateTime? Started { get; set; }
     public IEnumerable<Track> Queue { get; private set; } = Array.Empty<Track>();
@@ -42,31 +43,31 @@ public partial class SyncService : BackgroundService
             await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken);
             try
             {
-                var status = await SpotifyClient.GetStatusAsync(stoppingToken);
+                Player = await SpotifyClient.GetStatusAsync(stoppingToken);
 
-                if (status == null)
+                if (Player == null)
                 {
                     Online = false;
                     continue;
                 }
 
-                if (first && status.IsPlaying)
+                if (first && Player.IsPlaying)
                 {
                     Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
                     first = false;
                 }
 
                 Online = true;
-                Track ??= status.Item;
+                Track ??= Player.Item;
 
-                if (Track.Id == (status.Item?.Id ?? string.Empty))
+                if (Track.Id == (Player.Item?.Id ?? string.Empty))
                     continue;
 
                 Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
-
-                MusicChange?.Invoke(status!.Item, null!);
-                Track = status.Item;
+                Track = Player.Item;
                 Started = DateTime.UtcNow;
+
+                MusicChange?.Invoke(Player!.Item!, null!);
             }
             catch (Exception)
             {

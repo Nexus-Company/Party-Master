@@ -1,11 +1,11 @@
-﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`);
-var actual, playerList, showing, account, interactSckt;
+﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`),
+    interactSckt = new WebSocket(`${scktURl}Interact/Connect`);
+var actual, playerList, showing, account;
 
 $(document).ready(async function () {
     playerSckt.onmessage = playerScktMessage;
     await setActual();
     if (account != undefined) {
-        interactSckt = new WebSocket(`${scktURl}Interact/Connect`);
         interactSckt.onmessage = interactScktMessage;
     }
 });
@@ -13,7 +13,7 @@ $(document).ready(async function () {
 function interactScktMessage(obj) {
     let state = JSON.parse(obj);
 
-    console.log(state);
+    console.log(obj);
 }
 
 function playerScktMessage(obj) {

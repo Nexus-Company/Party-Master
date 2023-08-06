@@ -5,7 +5,7 @@ namespace Nexus.Spotify.Client;
 public class SpotifyClient
 {
     const string SpotifyEndPoint = "https://api.spotify.com/v1";
-    const string PlayerUrl = $"{SpotifyEndPoint}/me/player";
+    internal const string PlayerUrl = $"{SpotifyEndPoint}/me/player";
     internal HttpClient HttpClient { get; } = new();
     internal OAuthCredential Credential { get => _credential; }
     private readonly OAuthCredential _credential;
@@ -14,7 +14,7 @@ public class SpotifyClient
     {
         _credential = credential;
     }
-    public async Task<State> GetStatusAsync(CancellationToken? stoppingToken)
+    public async Task<PlayerState> GetStatusAsync(CancellationToken? stoppingToken)
     {
         stoppingToken ??= CancellationToken.None;
         var request = new HttpRequestMessage()
@@ -25,9 +25,12 @@ public class SpotifyClient
 
         var response = await HttpClient.SendAsync(request, stoppingToken.Value);
 
-        string state = await response.Content.ReadAsStringAsync(stoppingToken.Value);
+        string contentStr = await response.Content.ReadAsStringAsync(stoppingToken.Value);
+        var state = JsonConvert.DeserializeObject<PlayerState>(contentStr)!;
 
-        return JsonConvert.DeserializeObject<State>(state)!;
+        state.client = this;
+
+        return state;
     }
 
     public async Task<IEnumerable<Track>> GetQueueAsync(CancellationToken? stoppingToken)

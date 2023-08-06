@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal;
 using Nexus.Party.Master.Dal.Models.Accounts;
 using Nexus.Party.Master.Domain.Models;
+using Nexus.Party.Master.Domain.Services;
 
 namespace Nexus.Party.Master.Domain.Middleware;
 internal class InteractMiddleware
@@ -10,14 +11,16 @@ internal class InteractMiddleware
     private readonly RequestDelegate _next;
     private readonly AuthenticationContext authCtx;
     private readonly Config _config;
+    private readonly SyncService _syncService;
     private InteractContext interContext;
 
-    public InteractMiddleware(RequestDelegate next, AuthenticationContext authCtx, Config config)
+    public InteractMiddleware(RequestDelegate next, AuthenticationContext authCtx, Config config, SyncService syncService)
     {
         _next = next;
         interContext = new();
         this.authCtx = authCtx;
         _config = config;
+        _syncService = syncService;
     }
 
     public async Task InvokeAsync(HttpContext ctx)
@@ -28,6 +31,11 @@ internal class InteractMiddleware
         {
             await _next(ctx);
             return;
+        }
+
+        if (!_syncService.Online)
+        {
+            // O Serviço está offline 
         }
 
         Account user = (await AuthenticationHelper.TryGetAccount(authCtx, ctx))!;

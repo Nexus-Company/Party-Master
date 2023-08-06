@@ -6,6 +6,8 @@ public class UseSyncController : BaseController
 {
     private protected readonly SyncService syncService;
     private protected readonly InteractService interactService;
+    public int Connecteds
+        => interContext.Connecteds.Count();
     private protected UseSyncController(IConfiguration config, IServiceProvider serviceProvider)
         : base(config)
     {

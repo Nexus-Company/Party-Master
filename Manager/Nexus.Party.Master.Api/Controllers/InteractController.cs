@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal.Models.Interact;
 using Nexus.Party.Master.Domain.Middleware;
@@ -28,6 +29,14 @@ public class InteractController : UseSyncController
     {
         await AddInteractionAsync(InteractionType.VoteSkip, syncService.Track!.Id);
 
+        int skipVottings = await (from interact in interContext.Interactions
+                                  where interact.Date > syncService.Started &&
+                                        interact.InteractionType == InteractionType.VoteSkip
+                                  select interact.Id).CountAsync();
+
+        if (((double)skipVottings / (double)Connecteds) * 100.0 > // Skip Vottings Percentage
+            Config.PercentageInteract)
+            await syncService.Player!.SkipAsync();
 
 
         return Ok();
@@ -95,6 +104,10 @@ public class InteractController : UseSyncController
 
         await interContext.SaveChangesAsync();
 
-        NewInteract?.BeginInvoke(new InteractionResult(interaction), new(), null, null);
+        // Será necessário a criação de um método especial para o envio de interações aos clientes conectados.
+        // O Método atual pode ser sobrecarregado gerando uma resposta lenta ou até mesmo timeout para o 
+        // ultimo cliente que solicitou a interação.
+#warning Isso deverá ser corrigido futuramente 
+        NewInteract?.Invoke(new InteractionResult(interaction), new());
     }
 }
