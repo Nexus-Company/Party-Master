@@ -44,6 +44,7 @@
     max-width: 24rem;
     overflow: hidden scroll;
 }
+
     .player-list .text {
         overflow: hidden;
     }
@@ -52,37 +53,43 @@
         font-size: .75rem;
     }
 
-    .player-list .music-list {
-        display: inline-flex;
-        min-width: 100%;
-        padding: .3rem .25rem .3rem 0;
-        flex-direction: row;
+    .player-list ol {
+        margin: 0;
+        padding: 0;
     }
 
-        .player-list .music-list:hover {
-            cursor: pointer;
-            background: var(--bs-secondary-bg);
-            border-radius: .4rem;
-        }
 
-        .player-list .music-list h5 {
-            width: fit-content;
-            margin: 0;
-            padding: 0;
-            font-size: .95rem;
-            white-space: nowrap;
-        }
+ol .music {
+    display: inline-flex;
+    min-width: 100%;
+    padding: .3rem .25rem .3rem 0;
+    flex-direction: row;
+}
 
-        .player-list .music-list ul.artists {
-            font-size: .65rem;
-        }
+    ol .music:hover {
+        cursor: pointer;
+        background: var(--bs-secondary-bg);
+        border-radius: .4rem;
+    }
 
-        .player-list .music-list img.banner {
-            width: 2.5rem;
-            height: 2.5rem;
-            margin: 0 .5rem;
-            border-radius: .2rem;
-        }
+    ol .music h5 {
+        width: fit-content;
+        margin: 0;
+        padding: 0;
+        font-size: .95rem;
+        white-space: nowrap;
+    }
+
+    ol .music ul.artists {
+        font-size: .65rem;
+    }
+
+    ol .music img.banner {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: 0 .5rem;
+        border-radius: .2rem;
+    }
 
 
 .banner {
@@ -166,6 +173,36 @@
     background-size: 150% 300%;
     animation: animateGlow 9s ease infinite;
 }
+
+.commands {
+    text-align: center;
+    width: 100%;
+}
+
+    .commands .fa-forward {
+        display: block;
+        margin: 1.75rem auto;
+        width: auto;
+        padding: 1rem;
+        height: 2.25rem;
+        border-radius: 10rem;
+    }
+
+        .commands .fa-forward:hover {
+            cursor: pointer;
+        }
+
+.search-list {
+    padding: 0;
+}
+
+    .search-list .fa-plus {
+        padding: .8rem .75rem;
+    }
+
+    .search-list img.banner {
+        margin: 0 .5rem 0 0 !important;
+    }
 
 @keyframes animateGlow {
     0% {

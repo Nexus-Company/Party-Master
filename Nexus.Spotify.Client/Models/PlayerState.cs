@@ -9,10 +9,8 @@ public class PlayerState : Model
 
     [JsonProperty("progress_ms")]
     public int ProgressMilisseconds { get; set; }
-
-    [JsonProperty("item")]
     public Track Item { get; set; }
-
+    public Device Device { get; set; }
 
     public async Task SkipAsync()
     {
@@ -21,4 +19,14 @@ public class PlayerState : Model
 
         await client.HttpClient.SendAsync(request);
     }
+}
+
+public class Device
+{
+    public string? Id { get; set; }
+    [JsonProperty("is_active")]
+    public bool Active { get; set; }
+    public string Name { get; set; }
+    [JsonProperty("volume_percent")]
+    public int? Volume { get; set; }
 }

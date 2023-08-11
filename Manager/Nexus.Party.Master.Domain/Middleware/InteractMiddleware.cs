@@ -25,35 +25,42 @@ internal class InteractMiddleware
 
     public async Task InvokeAsync(HttpContext ctx)
     {
-        var attr = MiddlewaresHelper.TryGetAttribute<InteractAttribute>(ctx, true, true);
-
-        if (attr == null)
+        try
         {
-            await _next(ctx);
-            return;
+            var attr = MiddlewaresHelper.TryGetAttribute<InteractAttribute>(ctx, true, true);
+
+            if (attr == null)
+            {
+                await _next(ctx);
+                return;
+            }
+
+            if (!_syncService.Online)
+            {
+                // O Serviço está offline 
+            }
+
+            Account user = (await AuthenticationHelper.TryGetAccount(authCtx, ctx))!;
+
+            int count = await interContext.Connecteds.CountAsync();
+
+            if (count > _config.MinInteract)
+            {
+                // Numero minimo de participantes para interação não foi atigindo 
+            }
+
+            var connected = await (from con in interContext.Connecteds
+                                   where con.AccountId == user.Id
+                                   select con).FirstOrDefaultAsync();
+
+            if (connected == null)
+            {
+                // O usuário deve estar acompanhando as musicas para participar 
+            }
         }
-
-        if (!_syncService.Online)
+        catch (Exception)
         {
-            // O Serviço está offline 
-        }
 
-        Account user = (await AuthenticationHelper.TryGetAccount(authCtx, ctx))!;
-
-        int count = await interContext.Connecteds.CountAsync();
-
-        if (count > _config.MinInteract)
-        {
-            // Numero minimo de participantes para interação não foi atigindo 
-        }
-
-        var connected = await (from con in interContext.Connecteds
-                               where con.AccountId == user.Id
-                               select con).FirstOrDefaultAsync();
-
-        if (connected == null)
-        {
-            // O usuário deve estar acompanhando as musicas para participar 
         }
 
         await _next(ctx);

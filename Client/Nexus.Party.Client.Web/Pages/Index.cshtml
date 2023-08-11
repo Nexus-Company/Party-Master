@@ -5,14 +5,35 @@
 }
 
 <div class="player">
-    <ol class="player-list" id="nextList">
-    </ol>
+    <div class="player-list">
+        <button onclick="modalSearch.modal('show')">
+            <i class="fa-solid fa-plus fa-beat-fade"></i>
+        </button>
+        <ol id="nextList">
+            <li class="music" data-spotify="0CwCKS7Wn2Bef6mugpIJnx">
+                <div class="banner">
+                    <svg class="svg-inline--fa fa-pause" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pause" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M272 63.1l-32 0c-26.51 0-48 21.49-48 47.1v288c0 26.51 21.49 48 48 48L272 448c26.51 0 48-21.49 48-48v-288C320 85.49 298.5 63.1 272 63.1zM80 63.1l-32 0c-26.51 0-48 21.49-48 48v288C0 426.5 21.49 448 48 448l32 0c26.51 0 48-21.49 48-48v-288C128 85.49 106.5 63.1 80 63.1z"></path></svg><!-- <i class="fa-solid fa-pause"></i> Font Awesome fontawesome.com --><svg class="svg-inline--fa fa-play" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="play" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M361 215C375.3 223.8 384 239.3 384 256C384 272.7 375.3 288.2 361 296.1L73.03 472.1C58.21 482 39.66 482.4 24.52 473.9C9.377 465.4 0 449.4 0 432V80C0 62.64 9.377 46.63 24.52 38.13C39.66 29.64 58.21 29.99 73.03 39.04L361 215z"></path></svg><!-- <i class="fa-solid fa-play "></i> Font Awesome fontawesome.com --><img class="banner" src="https://i.scdn.co/image/ab67616d00001e024393c6cb7c985b7d5dcef374">
+                </div>
+                <div class="text">
+                    <h5>Teste</h5>
+                    <ul id="artists">
+                        <li class="artist">Testando</li>
+                        <li class="artist">Tester</li>
+                        <li class="artist">Testado</li>
+                    </ul>
+                </div>
+            </li>
+        </ol>
+    </div>
 
     <div class="player-music card card-light glow">
         <div class="actual">
             <img id="img" />
             <h3 id="name">Teste</h3>
             <ul id="artists"><li>Juan</li> <li>MC Junim</li> <li> Douglas S</li></ul>
+        </div>
+        <div class="commands">
+            <i class="fa-solid fa-forward fa-2xl" onclick="voteSkip()"></i>
         </div>
     </div>
 </div>
@@ -30,6 +51,7 @@
         </ul>
         <div class="time">
         </div>
+
     </div>
 </div>
 

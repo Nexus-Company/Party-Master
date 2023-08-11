@@ -20,4 +20,6 @@
     <ProjectReference Include="..\Nexus.Party.Master.Domain\Nexus.Party.Master.Domain.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/asmdef.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

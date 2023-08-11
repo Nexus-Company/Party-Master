@@ -22,7 +22,28 @@ public class InteractController : UseSyncController
     }
 
     [HttpPost]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.Conflict)]
+    [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
+    [Route("Vote/Add")]
+    public async Task<IActionResult> AddMusicAsync(string trackId)
+    {
+        int mscCount = syncService.Queue.Count(msc => msc.Id == trackId);
+
+        if (mscCount > Config.MaxFillingRepeat)
+            return Conflict();
+
+        // Add Genre trate 
+
+        await syncService.SpotifyClient!.AddToQueueAsync(trackId, syncService.Player!.Device.Id);
+
+        await AddInteractionAsync(InteractionType.Add, trackId);
+
+        return NoContent();
+    }
+
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.Conflict)]
     [Route("Vote/Skip")]
     public async Task<IActionResult> VoteSkipAsync()
@@ -38,10 +59,8 @@ public class InteractController : UseSyncController
             Config.PercentageInteract)
             await syncService.Player!.SkipAsync();
 
-
-        return Ok();
+        return NoContent();
     }
-
 
     [HttpGet("Connect")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -60,10 +79,7 @@ public class InteractController : UseSyncController
         // Send Music Change message to client
         void NewInteraction(object sender, EventArgs args)
         {
-            var json = JsonConvert.SerializeObject(sender, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+            var json = JsonConvert.SerializeObject(sender);
 
             socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(json)), WebSocketMessageType.Text, true,
                     CancellationToken.None)

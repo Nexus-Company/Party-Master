@@ -1,19 +1,33 @@
 ﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`),
-    interactSckt = new WebSocket(`${scktURl}Interact/Connect`);
+    interactSckt = new WebSocket(`${scktURl}Interact/Connect`),
+    modalSearch = $('#modalSearch');
+
 var actual, playerList, showing, account;
 
 $(document).ready(async function () {
     playerSckt.onmessage = playerScktMessage;
     await setActual();
+
     if (account != undefined) {
         interactSckt.onmessage = interactScktMessage;
     }
+
+    $('#schKey')
+        .on('keyup', searchKeyUp)
+    $(".commands .svg-inline--fa").on("mouseover", function () {
+        $(this).addClass("active");
+        console.log('in');
+    });
+    $(".commands .svg-inline--fa").on('mouseout', function () {
+        $(this).removeClass("active");
+        console.log('out');
+    });
 });
 
 function interactScktMessage(obj) {
     let state = JSON.parse(obj);
 
-    console.log(obj);
+    console.log(state);
 }
 
 function playerScktMessage(obj) {
@@ -49,7 +63,7 @@ async function updatePlayerList() {
 }
 
 function musicItem(msc) {
-    let li = $('<li class="music-list">');
+    let li = $('<li class="music">');
     li.attr('data-spotify', msc.id);
     li.click(musicPlayClick);
 
@@ -150,4 +164,49 @@ async function voteSkip() {
             withCredentials: true
         }
     });
+}
+
+async function searchKeyUp(obj) {
+    let query = $(obj.target).val();
+    var searchRst = await $.ajax({
+        type: 'GET',
+        url: `${apiUrl}Search?q=${encodeURIComponent(query)}`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+
+    var list = $('#schResult');
+
+    list.empty();
+
+    for (var i = 0; i < searchRst.length; i++) {
+        let item = musicItem(searchRst[i]);
+        let add = $('<div class="Add"><i class="fa-solid fa-plus" /></>');
+        item.prepend(add);
+        list.append(item);
+        add.on('click', voteAdd)
+    }
+
+    console.log(searchRst)
+}
+
+async function voteAdd(event) {
+    let id = $(event.target)
+        .parent()
+        .parent()
+        .data('spotify');
+
+    modalSearch
+        .modal('hide');
+
+    await $.ajax({
+        type: 'POST',
+        url: `${apiUrl}Interact/Vote/Add?trackId=${id}`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+
+    await updatePlayerList();
 }
