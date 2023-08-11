@@ -21,18 +21,17 @@ public class Program
 
         using MusicTrainner analizer = new();
 
-        List<Task<Track>> tasks = new();
+        List<Task> tasks = new();
         foreach (var item in load)
         {
             var task = client.GetTrackAsync(item.Id);
-            task.ContinueWith((task, obj) =>
+            tasks.Add(task.ContinueWith((task, obj) =>
             {
                 if (task.Result.Restrictions != null)
-                    return; 
+                    return;
 
                 analizer.AddToTrainning(task.Result, item.Genres);
-            }, null);
-            tasks.Add(task);
+            }, null));
         }
 
         await Task.WhenAll(tasks.ToArray());

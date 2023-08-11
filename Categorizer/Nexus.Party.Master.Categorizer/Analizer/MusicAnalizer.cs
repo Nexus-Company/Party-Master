@@ -34,13 +34,12 @@ public class MusicAnalizer : MusicAnalizerBase
 
         bool[] results = machine.Decide(mfccs);
 
-        List<string> result = new List<string>();
+        List<string> result = new();
 
         for (int i = 0; i < results.Length; i++)
         {
             if (results[i])
                 result.Add(genreConvert[i]);
-
         }
 
         return result.ToArray();

@@ -28,6 +28,27 @@ public class MusicTrainner : MusicAnalizerBase
             try
             {
                 var trainning = (AddTrainning)obj!;
+                bool exist = results.TryGetValue(trainning.Track.Id, out _);
+
+                if (exist)
+                {
+                    var track = results[trainning.Track.Id];
+                    var genres = ConvertGenres(trainning.Genres);
+
+                    List<short> genreRst = new();
+                    genreRst.AddRange(track.Genres);
+
+                    foreach (short item in genres)
+                    {
+                        if (!genreRst.Contains(item))
+                            genreRst.Add(item);
+                    }
+
+                    results[trainning.Track.Id] = new Trainning(genreRst.ToArray(), track.Mfccs);
+
+                    Console.WriteLine($"Music id \"0{trainning.Track.Id}\" rewrite genres.");
+                }
+
                 var stream = await DownloadAsync(trainning.Track);
 
                 var mfccs = CalculateMFCCs(stream);
@@ -38,13 +59,7 @@ public class MusicTrainner : MusicAnalizerBase
                 if (mfccsCount != mfccs.Length)
                     throw new ArgumentException("Track Mfccs length wrong");
 
-                if (results.TryGetValue(trainning.Track.Id, out _))
-                {
-                    results[trainning.Track.Id] = new Trainning(ConvertGenres(trainning.Genres), mfccs);
-                    Console.WriteLine($"Music id \"0{trainning.Track.Id}\" rewrite genres.");
-                }
-                else
-                    results.TryAdd(trainning.Track.Id, new Trainning(ConvertGenres(trainning.Genres), mfccs));
+                results.TryAdd(trainning.Track.Id, new Trainning(ConvertGenres(trainning.Genres), mfccs));
             }
             catch (Exception ex)
             {
