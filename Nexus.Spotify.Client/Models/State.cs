@@ -1,6 +1,6 @@
 ﻿namespace Nexus.Spotify.Client.Models;
 
-public class State
+public class State : Model
 {
     [JsonProperty("is_playing")]
     public bool IsPlaying { get; set; }

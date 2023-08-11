@@ -17,6 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Client.Web", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Spotify.Client", "Nexus.Spotify.Client\Nexus.Spotify.Client.csproj", "{82D184B3-020E-449F-9DEF-44F92551B3A5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorizer", "Categorizer", "{5E561A08-FD54-426C-82F7-95F48D2D159F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer", "Categorizer\Nexus.Party.Master.Categorizer\Nexus.Party.Master.Categorizer.csproj", "{58B30965-A2C9-454B-8DB2-0521E03960CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer.Extractor", "Categorizer\Nexus.Party.Master.Categorizer.Extractor\Nexus.Party.Master.Categorizer.Extractor.csproj", "{1233C410-544E-4D54-8A25-C1F6D870C193}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nexus.Party.Master.Categorizer.Test", "Categorizer\Nexus.Party.Master.Categorizer.Test\Nexus.Party.Master.Categorizer.Test.csproj", "{71D2AEBA-4335-4437-AAB0-9439596A6FB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +51,18 @@ Global
 		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82D184B3-020E-449F-9DEF-44F92551B3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58B30965-A2C9-454B-8DB2-0521E03960CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58B30965-A2C9-454B-8DB2-0521E03960CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58B30965-A2C9-454B-8DB2-0521E03960CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58B30965-A2C9-454B-8DB2-0521E03960CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1233C410-544E-4D54-8A25-C1F6D870C193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1233C410-544E-4D54-8A25-C1F6D870C193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1233C410-544E-4D54-8A25-C1F6D870C193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1233C410-544E-4D54-8A25-C1F6D870C193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D2AEBA-4335-4437-AAB0-9439596A6FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D2AEBA-4335-4437-AAB0-9439596A6FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D2AEBA-4335-4437-AAB0-9439596A6FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D2AEBA-4335-4437-AAB0-9439596A6FB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +72,9 @@ Global
 		{172CD874-6BA0-47AA-A90D-CA4D53F1676A} = {91B8CD78-8343-4209-A66A-95C45B9102C5}
 		{E6EC0432-5782-4A25-86ED-2D71BF002F41} = {91B8CD78-8343-4209-A66A-95C45B9102C5}
 		{B6683C2C-A91B-4954-8303-9E2478D1F136} = {5BAAC839-9C17-49F8-B0D4-92DC304BDF5C}
+		{58B30965-A2C9-454B-8DB2-0521E03960CA} = {5E561A08-FD54-426C-82F7-95F48D2D159F}
+		{1233C410-544E-4D54-8A25-C1F6D870C193} = {5E561A08-FD54-426C-82F7-95F48D2D159F}
+		{71D2AEBA-4335-4437-AAB0-9439596A6FB7} = {5E561A08-FD54-426C-82F7-95F48D2D159F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {822277FD-BF23-4AE1-91E1-4E525C5923C7}
