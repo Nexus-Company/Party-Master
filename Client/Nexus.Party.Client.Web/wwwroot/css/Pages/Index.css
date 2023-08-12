@@ -44,6 +44,7 @@
     max-width: 24rem;
     overflow: hidden scroll;
 }
+
     .player-list .text {
         overflow: hidden;
     }
@@ -179,6 +180,23 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+.timer i {
+    font-size: 15px;
+    margin: 0 .5rem;
+}
+
+.timer {
+    display: inline-flex;
+}
+
+#time .slider-selection {
+    background: var(--color-primary);
+}
+
+#time .slider-track {
+    background: var(--bs-card-bg);
 }
 
 @keyframes showing {

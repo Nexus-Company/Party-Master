@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Serialization;
+using Nexus.Party.Master.Api.Models;
 using Nexus.Spotify.Client.Models;
 using System.Net;
 using System.Net.WebSockets;
@@ -11,9 +12,11 @@ namespace Nexus.Party.Master.Api.Controllers;
 [Route("api/Player")]
 public class PlayerController : UseSyncController
 {
+    Random random;
     public PlayerController(IConfiguration config, IServiceProvider serviceProvider)
         : base(config, serviceProvider)
     {
+        random = new();
     }
 
     [HttpGet("Queue")]
@@ -43,16 +46,19 @@ public class PlayerController : UseSyncController
     [HttpGet("Actual")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.ServiceUnavailable)]
-    [ProducesResponseType(typeof(Track), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(TrackActual), (int)HttpStatusCode.OK)]
     public IActionResult ActualAsync()
     {
-        if (SyncService.Track is not null)
-            return Ok(SyncService.Track);
-
-        if (SyncService.Online)
+        if (SyncService.Track is null)
             return StatusCode(HttpStatusCode.ServiceUnavailable);
 
-        return NoContent();
+        return Ok(new TrackActual(new State()
+        {
+            Item = SyncService.Track,
+            IsPlaying = true,
+            TimeStamp = 1691797248865,
+            ProgressMilisseconds = 0
+        }));
     }
 
     [HttpGet("Connect")]

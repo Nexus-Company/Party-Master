@@ -14,6 +14,12 @@
             <h3 id="name">Teste</h3>
             <ul id="artists"><li>Juan</li> <li>MC Junim</li> <li> Douglas S</li></ul>
         </div>
+
+        <div class="timer">
+            <i id="actual">4:32</i>
+            <input id="time" data-slider-id="time" type="text" data-slider-min="0" data-slider-max="100" data-slider-enabled="false"  />
+            <i id="total">6:00</i>
+        </div>
     </div>
 </div>
 
@@ -28,15 +34,10 @@
             <li class="artist">MC Junim</li>
             <li class="artist"> Douglas S</li>
         </ul>
-        <div class="time">
-        </div>
+    </div>
+    <div class="commands">
     </div>
 </div>
-
-@section Scripts{
-    <link rel="stylesheet" href="~/css/Pages/Index.css" asp-append-version="true" />
-    <script type="text/javascript" src="@Url.Content("js/Pages/Index.js")" asp-append-version="true"></script>
-}
 
 @section Modals{
     <div class="modal" tabindex="-1" role="dialog" id="modalSearch">
@@ -61,4 +62,12 @@
             </div>
         </div>
     </div>
+}
+
+@section Scripts{
+    <link rel="stylesheet" href="~/css/Pages/Index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap-slider/css/bootstrap-slider.css" asp-append-version="true" />
+    <script type="text/javascript" src="~/lib/bootstrap-slider/bootstrap-slider.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/moment.js/moment.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/Pages/Index.js" asp-append-version="true"></script>
 }
