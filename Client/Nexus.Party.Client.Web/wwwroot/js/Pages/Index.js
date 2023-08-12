@@ -49,7 +49,7 @@ function playerScktMessage(obj) {
 
 async function setActual() {
     state = await $.get(`${apiUrl}Player/Actual`);
-    let player = $('.player');
+    let player = $('.player-music');
     let msc = state.track;
 
     player.find('#name')
@@ -110,7 +110,7 @@ function musicItem(msc) {
 
 function addArtists(artists, list) {
     list.empty();
-
+    console.log(list)
     for (var i = 0; i < artists.length; i++) {
         var artist = $('<li class="artist">');
 
