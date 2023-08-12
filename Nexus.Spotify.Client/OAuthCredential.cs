@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Timers;
 using Timer = System.Timers.Timer;
 

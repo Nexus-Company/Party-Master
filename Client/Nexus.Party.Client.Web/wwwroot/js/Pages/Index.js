@@ -2,7 +2,7 @@
     interactSckt = new WebSocket(`${scktURl}Interact/Connect`),
     modalSearch = $('#modalSearch'),
     toMoment = (value) => moment(value).format('mm:ss')
-    slider = new Slider('#time', {
+slider = new Slider('#time', {
     formatter: function (value) {
         try {
             return toMoment(state.progressMilisseconds);
@@ -11,7 +11,7 @@
         }
     }
 });
-var state, playerList, showing, account;
+var state, last, playerList, showing, account;
 
 var actual, playerList, showing, account;
 
@@ -37,7 +37,7 @@ $(document).ready(async function () {
 });
 
 function interactScktMessage(obj) {
-    let state = JSON.parse(obj);
+    let state = JSON.parse(obj.data);
 
     console.log(state);
 }
@@ -173,10 +173,16 @@ async function musicPlayClick(event) {
 }
 
 function setUpdateTimer() {
-    state.progressMilisseconds = state.progressMilisseconds + 100;
+
+    if (last == undefined)
+        last = Date.now();
+    
+    state.progressMilisseconds = state.progressMilisseconds + (Date.now() - last);
+    last = Date.now();
     slider.setValue((state.progressMilisseconds / state.track.duration) * 100);
     $('#actual')
         .text(toMoment(state.progressMilisseconds));
+
     setTimeout(setUpdateTimer, 100);
 }
 
@@ -231,6 +237,4 @@ async function voteAdd(event) {
             withCredentials: true
         }
     });
-
-    await updatePlayerList();
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Cors;
-using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal;
 using Nexus.Party.Master.Domain;
 using Nexus.Party.Master.Domain.Models;

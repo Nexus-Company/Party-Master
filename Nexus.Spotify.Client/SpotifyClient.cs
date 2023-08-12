@@ -87,6 +87,22 @@ public class SpotifyClient
         return rst.Tracks.Items;
     }
 
+    public async Task<Track?> GetTrackAsync(string trackId, string market = "BR", CancellationToken? stoppingToken = null)
+    {
+        stoppingToken ??= CancellationToken.None;
+        var request = CreateRequest($"{PlayerUrl}/queue?");
+
+        var response = await HttpClient.SendAsync(request, stoppingToken.Value);
+
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        string state = await response.Content.ReadAsStringAsync(stoppingToken.Value);
+
+        var rst = JsonConvert.DeserializeObject<Track>(state)!;
+
+        return rst;
+    }
     internal HttpRequestMessage CreateRequest(string uri)
     {
         var request = new HttpRequestMessage()

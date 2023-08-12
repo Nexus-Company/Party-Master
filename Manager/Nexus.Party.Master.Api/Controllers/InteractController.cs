@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Serialization;
 using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal.Models.Interact;
 using Nexus.Party.Master.Domain.Middleware;
+using Nexus.Spotify.Client.Models;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
@@ -24,6 +24,7 @@ public class InteractController : UseSyncController
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.Conflict)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
     [Route("Vote/Add")]
     public async Task<IActionResult> AddMusicAsync(string trackId)
@@ -35,9 +36,16 @@ public class InteractController : UseSyncController
 
         // Add Genre trate 
 
+        Track? track = await syncService.SpotifyClient!.GetTrackAsync(trackId);
+
+        if (track == null)
+            return NotFound();
+
         await syncService.SpotifyClient!.AddToQueueAsync(trackId, syncService.Player!.Device.Id);
 
         await AddInteractionAsync(InteractionType.Add, trackId);
+
+        await syncService.AddTrackInQueue(track);
 
         return NoContent();
     }
@@ -77,13 +85,12 @@ public class InteractController : UseSyncController
     private async Task HandleConnectionAsync(WebSocket socket)
     {
         // Send Music Change message to client
-        void NewInteraction(object sender, EventArgs args)
+        async void NewInteraction(object sender, EventArgs args)
         {
             var json = JsonConvert.SerializeObject(sender);
 
-            socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(json)), WebSocketMessageType.Text, true,
-                    CancellationToken.None)
-                .Wait();
+            await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(json)), WebSocketMessageType.Text, true,
+                    CancellationToken.None);
         }
 
         NewInteract += NewInteraction;
