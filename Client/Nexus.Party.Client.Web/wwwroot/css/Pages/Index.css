@@ -218,6 +218,23 @@ ol .music {
     }
 }
 
+.timer i {
+    font-size: 15px;
+    margin: 0 .5rem;
+}
+
+.timer {
+    display: inline-flex;
+}
+
+#time .slider-selection {
+    background: var(--color-primary);
+}
+
+#time .slider-track {
+    background: var(--bs-card-bg);
+}
+
 @keyframes showing {
     0% {
         transform: scale(.25) translate(50%,0);

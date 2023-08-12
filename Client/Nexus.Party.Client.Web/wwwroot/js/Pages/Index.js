@@ -1,6 +1,17 @@
 ﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`),
     interactSckt = new WebSocket(`${scktURl}Interact/Connect`),
-    modalSearch = $('#modalSearch');
+    modalSearch = $('#modalSearch'),
+    toMoment = (value) => moment(value).format('mm:ss')
+    slider = new Slider('#time', {
+    formatter: function (value) {
+        try {
+            return toMoment(state.progressMilisseconds);
+        } catch (e) {
+            return '';
+        }
+    }
+});
+var state, playerList, showing, account;
 
 var actual, playerList, showing, account;
 
@@ -22,6 +33,7 @@ $(document).ready(async function () {
         $(this).removeClass("active");
         console.log('out');
     });
+    setUpdateTimer();
 });
 
 function interactScktMessage(obj) {
@@ -36,19 +48,22 @@ function playerScktMessage(obj) {
 }
 
 async function setActual() {
-    try {
-        let msc = await $.get(`${apiUrl}Player/Actual`);
+    state = await $.get(`${apiUrl}Player/Actual`);
+    let player = $('.player');
+    let msc = state.track;
 
-        $('.player #name').text(msc.name);
-        $('.player #img').attr('src', msc.album.images[0].url);
+    player.find('#name')
+        .text(msc.name);
 
-        addArtists(msc.artists, $('.player #artists'));
+    player.find('#img')
+        .attr('src', msc.album.images[0].url);
 
-        actual = msc;
-        updatePlayerList();
-    } catch (e) {
-        console.log(e)
-    }
+    addArtists(msc.artists, player.find('#artists'));
+
+    player.find('#total')
+        .text(moment(msc.duration).format('mm:ss'));
+
+    updatePlayerList();
 }
 
 async function updatePlayerList() {
@@ -151,9 +166,18 @@ async function musicPlayClick(event) {
 
     showing = new Audio(msc.previewUrl);
     showing.onended = function EndMusic() {
-        console.log('music end');
+        $('.preview')
+            .addClass('hide');
     }
     await showing.play();
+}
+
+function setUpdateTimer() {
+    state.progressMilisseconds = state.progressMilisseconds + 100;
+    slider.setValue((state.progressMilisseconds / state.track.duration) * 100);
+    $('#actual')
+        .text(toMoment(state.progressMilisseconds));
+    setTimeout(setUpdateTimer, 100);
 }
 
 async function voteSkip() {
