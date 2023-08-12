@@ -217,8 +217,6 @@ async function searchKeyUp(obj) {
         list.append(item);
         add.on('click', voteAdd)
     }
-
-    console.log(searchRst)
 }
 
 async function voteAdd(event) {
