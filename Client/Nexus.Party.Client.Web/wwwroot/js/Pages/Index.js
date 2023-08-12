@@ -37,7 +37,7 @@ $(document).ready(async function () {
 });
 
 function interactScktMessage(obj) {
-    let state = JSON.parse(obj);
+    let state = JSON.parse(obj.data);
 
     console.log(state);
 }
@@ -231,6 +231,4 @@ async function voteAdd(event) {
             withCredentials: true
         }
     });
-
-    await updatePlayerList();
 }

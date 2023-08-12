@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Nexus.Party.Master.Dal;
-using System.Reflection;
 using Nexus.Party.Master.Domain.Models;
+using System.Reflection;
 
 namespace Nexus.Party.Master.Domain.Middleware;
 

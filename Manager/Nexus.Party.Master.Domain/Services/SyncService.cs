@@ -90,4 +90,10 @@ public partial class SyncService : BackgroundService
 
         await base.StopAsync(cancellationToken);
     }
+
+    public async Task AddTrackInQueue(Track track)
+    {
+        Queue = await SpotifyClient!.GetQueueAsync();
+        Track!.Id = string.Empty;
+    }
 }

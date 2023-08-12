@@ -8,7 +8,7 @@ public class Interaction
 
     [Required]
     public InteractionType InteractionType { get; set; }
-  
+
     [Required]
     public DateTime Date { get; set; }
 
