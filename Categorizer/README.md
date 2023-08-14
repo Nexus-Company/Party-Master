@@ -5,4 +5,4 @@ A categorização é feita utilizando os mfccs dos samples da múisica com entra
 Para o treinamento do modelo é utilizado os previews de músicas em playlist categorizadas por genêros. 
 
 ### Utilização de modelo treinado 
-Após o treinamento do modelo ele é salvo em um arquivo com extensão [MMA](Nexus.Party.Master.Categorizer/Save/Structure.md)
+Após o treinamento do modelo ele é salvo em um arquivo com extensão [MMA](Nexus.Party.Master.Categorizer/Save/README.md)
