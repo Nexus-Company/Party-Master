@@ -55,9 +55,15 @@
 
     .player-list ol {
         margin: 0;
-        padding: 0;
+        padding: 2.25rem 0 0 0;
     }
 
+        .player-list ol .music:first-child::before {
+            content: "1°";
+            padding: .25rem;
+            width: fit-content;
+            height: fit-content;
+        }
 
 ol .music {
     display: inline-flex;
@@ -219,12 +225,25 @@ ol .music {
 }
 
 .timer i {
-    font-size: 15px;
+    font-size: var(--bs-body-font-size);
+    font-family: var(--bs-body-font-family);
+    font-weight: var(--bs-body-font-weight);
     margin: 0 .5rem;
+    padding: 0;
+    color: var(--bs-heading-color);
 }
+
+    .timer i:first-child {
+        margin: 0 .25rem 0 0;
+    }
+
+    .timer i:last-child {
+        margin: 0 0 0 .25rem;
+    }
 
 .timer {
     display: inline-flex;
+    margin-top: .5rem;
 }
 
 #time .slider-selection {
@@ -253,3 +272,22 @@ ol .music {
         opacity: 1;
     }
 }
+
+
+button.card {
+    align-items: center;
+    margin: .25rem;
+    backdrop-filter: blur(.15rem);
+    width: 22rem;
+    position: absolute;
+    z-index: 1;
+}
+
+    button.card:hover {
+        border-color: var(--color-primary);
+        transition: .3s
+    }
+
+    button.card .svg-inline--fa {
+        margin: .25rem;
+    }

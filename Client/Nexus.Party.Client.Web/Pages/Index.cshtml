@@ -6,7 +6,7 @@
 
 <div class="player">
     <div class="player-list">
-        <button onclick="modalSearch.modal('show')">
+        <button class="card" onclick="modalSearch.modal('show')">
             <i class="fa-solid fa-plus fa-beat-fade"></i>
         </button>
         <ol id="nextList">
@@ -35,7 +35,7 @@
 
         <div class="timer">
             <i id="actual">4:32</i>
-            <input id="time" data-slider-id="time" type="text" data-slider-min="0" data-slider-max="100" data-slider-enabled="false"  />
+            <input id="time" data-slider-id="time" type="text" data-slider-min="0" data-slider-max="100" data-slider-enabled="false" />
             <i id="total">6:00</i>
         </div>
         <div class="commands">
@@ -57,7 +57,6 @@
         </ul>
     </div>
     <div class="commands">
-
     </div>
 </div>
 
@@ -72,10 +71,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="schKey" />
-
+                    <div class="col-md-6">
+                        <div class="input-group has-validation">
+                            <input type="text" class="form-control card" id="schKey" aria-describedby="inputGroupPrepend" required>
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <div class="invalid-feedback">
+                                Please choose a username.
+                            </div>
+                        </div>
+                    </div>
                     <ol class="search-list" id="schResult">
                     </ol>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary">Adicionar</button>

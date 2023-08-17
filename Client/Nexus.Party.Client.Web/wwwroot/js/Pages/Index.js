@@ -24,15 +24,8 @@ $(document).ready(async function () {
     }
 
     $('#schKey')
-        .on('keyup', searchKeyUp)
-    $(".commands .svg-inline--fa").on("mouseover", function () {
-        $(this).addClass("active");
-        console.log('in');
-    });
-    $(".commands .svg-inline--fa").on('mouseout', function () {
-        $(this).removeClass("active");
-        console.log('out');
-    });
+        .on('keyup', searchKeyUp);
+
     setUpdateTimer();
 });
 
@@ -110,7 +103,7 @@ function musicItem(msc) {
 
 function addArtists(artists, list) {
     list.empty();
-    console.log(list)
+
     for (var i = 0; i < artists.length; i++) {
         var artist = $('<li class="artist">');
 
