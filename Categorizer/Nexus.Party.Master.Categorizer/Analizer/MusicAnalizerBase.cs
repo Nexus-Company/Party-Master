@@ -84,20 +84,6 @@ public abstract class MusicAnalizerBase : IDisposable
 
     private protected MultilabelSupportVectorMachine<Gaussian> TrainSVMModel(double[][] inputs, bool[][] outputs)
     {
-        int inpt = inputs[0].Length;
-        int @out = outputs[0].Length;
-        for (int i = 0; i < inputs.Length; i++)
-        {
-            double[] input = inputs[i];
-            bool[] output = outputs[i];
-
-            if (@out != output.Length || 
-                inpt != input.Length)
-            {
-
-            }
-        }
-
         // Create a new Linear kernel
         // Create the Multi-class learning algorithm for the machine
         var teacher = new MultilabelSupportVectorLearning<Gaussian>()
