@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Microsoft.Extensions.Hosting.Abstractions">
       <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\7.0.5\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
     </Reference>
@@ -19,11 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Nexus.Spotify.Client\Nexus.Spotify.Client.csproj" />
+    <ProjectReference Include="..\Nexus.Party.Master.Dal\Nexus.Party.Master.Dal.csproj" />
   </ItemGroup>
 
 </Project>

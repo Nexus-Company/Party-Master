@@ -1,21 +1,21 @@
 #region Globals
 global using Microsoft.AspNetCore.Mvc;
 global using Nexus.Party.Master.Api.Controllers.Base;
+global using Nexus.Party.Master.Domain.Helpers;
 global using Newtonsoft.Json;
 using Nexus.Party.Master.Domain;
-
+using Nexus.Party.Master.Domain.Services;
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<SyncService>();
-builder.Services.AddHostedService(provider => provider.GetService<SyncService>());
+builder.Services.AddCustomService<ISyncService, SyncService>();
+builder.Services.AddCustomService<CategorizerService>();
 
 var app = builder.Build();
 var confg = app.Configuration;

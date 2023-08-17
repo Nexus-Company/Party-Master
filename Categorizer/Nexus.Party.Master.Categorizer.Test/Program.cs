@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Nexus.Party.Master.Categorizer.Analizer;
 using Nexus.Spotify.Client;
 using Nexus.Spotify.Client.Models;
+using System.Net.Http.Json;
 
 public class Program
 {
@@ -20,21 +21,25 @@ public class Program
         var load = JsonConvert.DeserializeObject<LoadData[]>(json);
 
         using MusicTrainner analizer = new();
-
-        List<Task> tasks = new();
-        foreach (var item in load)
+        foreach (var batch in MusicTrainner.SplitListIntoBatches(load, 250))
         {
-            var task = client.GetTrackAsync(item.Id);
-            tasks.Add(task.ContinueWith((task, obj) =>
+            List<Task> tasks = new();
+            foreach (var item in batch)
             {
-                if (task.Result.Restrictions != null)
-                    return;
+                var task = client.GetTrackAsync(item.Id);
+                tasks.Add(task.ContinueWith((task, obj) =>
+                {
+                    if (task.Result.Restrictions != null)
+                        return;
 
-                analizer.AddToTrainning(task.Result, item.Genres);
-            }, null));
+                    analizer.AddToTrainning(task.Result, item.Genres);
+                }, null));
+            }
+
+            await Task.WhenAll(tasks.ToArray());
+            await Task.Delay(1000);
         }
 
-        await Task.WhenAll(tasks.ToArray());
         await analizer.ProccessAsync();
         analizer.Trainnig();
 
