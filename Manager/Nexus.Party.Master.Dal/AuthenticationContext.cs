@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿global using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal.Models.Accounts;
 
 namespace Nexus.Party.Master.Dal;
@@ -6,7 +6,6 @@ namespace Nexus.Party.Master.Dal;
 public class AuthenticationContext : DbContext
 {
     public virtual DbSet<Account> Accounts { get; set; }
-
     public virtual DbSet<Authentication> Authentications { get; set; }
 
     private readonly string ConnectionString;

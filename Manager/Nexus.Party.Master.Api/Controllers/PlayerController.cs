@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Serialization;
+using Nexus.Party.Master.Api.Models;
+using Nexus.Party.Master.Dal.Models.Interact;
 using Nexus.Spotify.Client.Models;
 using System.Net;
 using System.Net.WebSockets;
@@ -11,9 +13,11 @@ namespace Nexus.Party.Master.Api.Controllers;
 [Route("api/Player")]
 public class PlayerController : UseSyncController
 {
+    Random random;
     public PlayerController(IConfiguration config, IServiceProvider serviceProvider)
         : base(config, serviceProvider)
     {
+        random = new();
     }
 
     [HttpGet("Queue")]
@@ -29,11 +33,11 @@ public class PlayerController : UseSyncController
             return BadRequest();
 
         if (!string.IsNullOrEmpty(key))
-            result = (from msc in SyncService.Queue
+            result = (from msc in syncService.Queue
                       where msc.Name.Contains(key)
                       select msc);
         else
-            result = SyncService.Queue;
+            result = syncService.Queue;
 
 
         return Ok(result.Skip((page - 1) * per_page)
@@ -43,16 +47,13 @@ public class PlayerController : UseSyncController
     [HttpGet("Actual")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.ServiceUnavailable)]
-    [ProducesResponseType(typeof(Track), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(TrackActual), (int)HttpStatusCode.OK)]
     public IActionResult ActualAsync()
     {
-        if (SyncService.Track is not null)
-            return Ok(SyncService.Track);
-
-        if (SyncService.Online)
+        if (syncService.Player is null)
             return StatusCode(HttpStatusCode.ServiceUnavailable);
 
-        return NoContent();
+        return Ok(new TrackActual(syncService.Player));
     }
 
     [HttpGet("Connect")]
@@ -62,7 +63,29 @@ public class PlayerController : UseSyncController
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return BadRequest();
 
+        ConnectedUser? con = null;
+
+        if (User != null)
+        {
+            con = new ConnectedUser()
+            {
+                AccountId = User.Id,
+                ConnectedAt = DateTime.UtcNow
+            };
+
+            await interContext.Connecteds.AddAsync(con);
+
+            await interContext.SaveChangesAsync();
+        }
+
         await HandleConnectionAsync(await HttpContext.WebSockets.AcceptWebSocketAsync());
+
+        if (con != null)
+        {
+            interContext.Remove(con);
+
+            await interContext.SaveChangesAsync();
+        }
 
         return new EmptyResult();
     }
@@ -82,12 +105,12 @@ public class PlayerController : UseSyncController
                 .Wait();
         }
 
-        SyncService.MusicChange += MusicChange;
+        syncService.MusicChange += MusicChange;
 
         WebSocketReceiveResult? result = null;
 
         // Await close connection for client
-        while (!(result?.CloseStatus.HasValue ?? socket.CloseStatus.HasValue))
+        while (socket.State == WebSocketState.Open)
         {
             try
             {
@@ -99,6 +122,6 @@ public class PlayerController : UseSyncController
             }
         }
 
-        SyncService.MusicChange -= MusicChange;
+        syncService.MusicChange -= MusicChange;
     }
 }
