@@ -65,3 +65,34 @@ async function setAccount() {
         console.log(e);
     }
 }
+
+function showToast(body = 'Hello, world! This is a toast message.', theme = 'danger') {
+    var toastElement = $('<div class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">' +
+        '<div class="d-flex">' +
+        '<div class="toast-body">' +
+        '</div>' +
+        '<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>' +
+        '</div>' +
+        '</div>');
+
+    toastElement
+        .find('.toast-body')
+        .append(body);
+
+    toastElement.addClass('text-bg-' + theme);
+    toastElement.on('hidden.bs.toast', function () {
+        // Remove o elemento HTML do DOM
+        toastElement.remove();
+    });
+
+    $('.toast-container').append(toastElement);
+
+    var toast = new bootstrap.Toast(toastElement);
+
+    // Show the toast
+    toast.show();
+}
+
+function showLoadingModal() {
+
+}
