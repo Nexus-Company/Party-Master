@@ -190,7 +190,7 @@ async function voteSkip() {
 }
 
 async function searchKeyUp(obj) {
-    let query = $(obj.target).val();
+    let query = $('#schKey').val();
     var searchRst = await $.ajax({
         type: 'GET',
         url: `${apiUrl}Search?q=${encodeURIComponent(query)}`,

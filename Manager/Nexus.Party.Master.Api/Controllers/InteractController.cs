@@ -26,6 +26,7 @@ public class InteractController : UseSyncController
     [ProducesResponseType((int)HttpStatusCode.Conflict)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
+    [ProducesResponseType((int)HttpStatusCode.TooManyRequests)]
     [Route("Vote/Add")]
     public async Task<IActionResult> AddMusicAsync(string trackId)
     {
@@ -34,12 +35,22 @@ public class InteractController : UseSyncController
         if (mscCount > Config.MaxFillingRepeat)
             return Conflict();
 
-        // Add Genre trate 
+        int userCount = await (from inter in interContext.Interactions
+                               where inter.InteractionType == InteractionType.Add &&
+                                     inter.Actor == User!.Id &&
+                                     inter.Date > (DateTime.UtcNow - TimeSpan.FromMinutes(45))
+                               select inter.Id).CountAsync();
+
+        if (Config.MaxAddRate > 1 &&
+            userCount > Config.MaxAddRate)
+            return StatusCode(HttpStatusCode.TooManyRequests);
 
         Track? track = await syncService.SpotifyClient!.GetTrackAsync(trackId);
 
         if (track == null)
             return NotFound();
+
+        // Add Genre trate 
 
         await syncService.SpotifyClient!.AddToQueueAsync(trackId, syncService.Player!.Device.Id);
 

@@ -49,9 +49,6 @@ app.UseHttpsRedirection();
 // Use Nexus Middleware for control clients authentications
 app.UseAuthentication(authHelper.ValidAuthenticationAsync);
 
-app.UseInteract(authHelper.authCtx, config.GetSection("Config")
-            .Get<Config>()!);
-
 app.MapControllers();
 
 app.Run();
