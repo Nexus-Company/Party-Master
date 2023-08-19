@@ -44,6 +44,7 @@
     max-width: 24rem;
     overflow: hidden scroll;
 }
+
     .player-list .text {
         overflow: hidden;
     }
@@ -52,37 +53,49 @@
         font-size: .75rem;
     }
 
-    .player-list .music-list {
-        display: inline-flex;
-        min-width: 100%;
-        padding: .3rem .25rem .3rem 0;
-        flex-direction: row;
+    .player-list ol {
+        margin: 0;
+        padding: 2.25rem 0 0 0;
     }
 
-        .player-list .music-list:hover {
-            cursor: pointer;
-            background: var(--bs-secondary-bg);
-            border-radius: .4rem;
-        }
-
-        .player-list .music-list h5 {
+        .player-list ol .music:first-child::before {
+            content: "1°";
+            padding: .25rem;
             width: fit-content;
-            margin: 0;
-            padding: 0;
-            font-size: .95rem;
-            white-space: nowrap;
+            height: fit-content;
         }
 
-        .player-list .music-list ul.artists {
-            font-size: .65rem;
-        }
+ol .music {
+    display: inline-flex;
+    min-width: 100%;
+    padding: .3rem .25rem .3rem 0;
+    flex-direction: row;
+}
 
-        .player-list .music-list img.banner {
-            width: 2.5rem;
-            height: 2.5rem;
-            margin: 0 .5rem;
-            border-radius: .2rem;
-        }
+    ol .music:hover {
+        cursor: pointer;
+        background: var(--bs-secondary-bg);
+        border-radius: .4rem;
+    }
+
+    ol .music h5 {
+        width: fit-content;
+        margin: 0;
+        padding: 0;
+        font-size: .95rem;
+        white-space: nowrap;
+    }
+
+    ol .music ul.artists {
+        font-size: .65rem;
+    }
+
+    ol .music img.banner {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: 0 .5rem;
+        border-radius: .2rem;
+    }
 
 
 .banner {
@@ -167,6 +180,36 @@
     animation: animateGlow 9s ease infinite;
 }
 
+.commands {
+    text-align: center;
+    width: 100%;
+}
+
+    .commands .fa-forward {
+        display: block;
+        margin: 1.75rem auto;
+        width: auto;
+        padding: 1rem;
+        height: 2.25rem;
+        border-radius: 10rem;
+    }
+
+        .commands .fa-forward:hover {
+            cursor: pointer;
+        }
+
+.search-list {
+    padding: 0;
+}
+
+    .search-list .fa-plus {
+        padding: .8rem .75rem;
+    }
+
+    .search-list img.banner {
+        margin: 0 .5rem 0 0 !important;
+    }
+
 @keyframes animateGlow {
     0% {
         background-position: 0% 50%;
@@ -179,6 +222,36 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+.timer i {
+    font-size: var(--bs-body-font-size);
+    font-family: var(--bs-body-font-family);
+    font-weight: var(--bs-body-font-weight);
+    margin: 0 .5rem;
+    padding: 0;
+    color: var(--bs-heading-color);
+}
+
+    .timer i:first-child {
+        margin: 0 .25rem 0 0;
+    }
+
+    .timer i:last-child {
+        margin: 0 0 0 .25rem;
+    }
+
+.timer {
+    display: inline-flex;
+    margin-top: .5rem;
+}
+
+#time .slider-selection {
+    background: var(--color-primary);
+}
+
+#time .slider-track {
+    background: var(--bs-card-bg);
 }
 
 @keyframes showing {
@@ -199,3 +272,22 @@
         opacity: 1;
     }
 }
+
+
+button.card {
+    align-items: center;
+    margin: .25rem;
+    backdrop-filter: blur(.15rem);
+    width: 22rem;
+    position: absolute;
+    z-index: 1;
+}
+
+    button.card:hover {
+        border-color: var(--color-primary);
+        transition: .3s
+    }
+
+    button.card .svg-inline--fa {
+        margin: .25rem;
+    }

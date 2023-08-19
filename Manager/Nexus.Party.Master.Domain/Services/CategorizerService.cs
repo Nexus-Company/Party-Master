@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nexus.Spotify.Client.Models;
 
 namespace Nexus.Party.Master.Domain.Services;
-public class CategorizerService : BackgroundService
+public class CategorizerService : BackgroundService, ICategorizerService
 {
     private readonly ILogger<SyncService> _logger;
     private readonly ISyncService syncService;
@@ -26,7 +27,7 @@ public class CategorizerService : BackgroundService
         _logger.LogInformation("Categorizer Service is starting asynchronously.");
 
         await base.StartAsync(cancellationToken);
-        }
+    }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
@@ -34,4 +35,21 @@ public class CategorizerService : BackgroundService
 
         await base.StopAsync(cancellationToken);
     }
+
+    public async Task<Track?> GetTrackAsync(string trackId)
+    {
+        return await syncService.SpotifyClient!.GetTrackAsync(trackId);
+    }
+
+    public async Task<IEnumerable<Track>> SearchAsync(string q)
+    {
+        return await syncService.SpotifyClient!.SearchAsync(q);
+    }
+}
+
+public interface ICategorizerService
+{
+    public Task<Track?> GetTrackAsync(string trackId);
+
+    public Task<IEnumerable<Track>> SearchAsync(string q);
 }

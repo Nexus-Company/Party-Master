@@ -1,30 +1,62 @@
-﻿const sckt = new WebSocket(`${scktURl}Player/Connect`);
+﻿const playerSckt = new WebSocket(`${scktURl}Player/Connect`),
+    interactSckt = new WebSocket(`${scktURl}Interact/Connect`),
+    modalSearch = $('#modalSearch'),
+    toMoment = (value) => moment(value).format('mm:ss')
+slider = new Slider('#time', {
+    formatter: function (value) {
+        try {
+            return toMoment(state.progressMilisseconds);
+        } catch (e) {
+            return '';
+        }
+    }
+});
+var state, last, playerList, showing, account;
+
 var actual, playerList, showing, account;
 
 $(document).ready(async function () {
-    sckt.onmessage = scktMessage;
+    playerSckt.onmessage = playerScktMessage;
     await setActual();
+
+    if (account != undefined) {
+        interactSckt.onmessage = interactScktMessage;
+    }
+
+    $('#schKey')
+        .on('keyup', searchKeyUp);
+
+    setUpdateTimer();
 });
 
-function scktMessage(obj) {
+function interactScktMessage(obj) {
+    let state = JSON.parse(obj.data);
+
+    console.log(state);
+}
+
+function playerScktMessage(obj) {
     let state = JSON.parse(obj.data)
     setActual(state);
 }
 
 async function setActual() {
-    try {
-        let msc = await $.get(`${apiUrl}Player/Actual`);
+    state = await $.get(`${apiUrl}Player/Actual`);
+    let player = $('.player-music');
+    let msc = state.track;
 
-        $('.player #name').text(msc.name);
-        $('.player #img').attr('src', msc.album.images[0].url);
+    player.find('#name')
+        .text(msc.name);
 
-        addArtists(msc.artists, $('.player #artists'));
+    player.find('#img')
+        .attr('src', msc.album.images[0].url);
 
-        actual = msc;
-        updatePlayerList();
-    } catch (e) {
-        console.log(e)
-    }
+    addArtists(msc.artists, player.find('#artists'));
+
+    player.find('#total')
+        .text(moment(msc.duration).format('mm:ss'));
+
+    updatePlayerList();
 }
 
 async function updatePlayerList() {
@@ -39,7 +71,7 @@ async function updatePlayerList() {
 }
 
 function musicItem(msc) {
-    let li = $('<li class="music-list">');
+    let li = $('<li class="music">');
     li.attr('data-spotify', msc.id);
     li.click(musicPlayClick);
 
@@ -127,7 +159,73 @@ async function musicPlayClick(event) {
 
     showing = new Audio(msc.previewUrl);
     showing.onended = function EndMusic() {
-        console.log('music end');
+        $('.preview')
+            .addClass('hide');
     }
     await showing.play();
+}
+
+function setUpdateTimer() {
+
+    if (last == undefined)
+        last = Date.now();
+    
+    state.progressMilisseconds = state.progressMilisseconds + (Date.now() - last);
+    last = Date.now();
+    slider.setValue((state.progressMilisseconds / state.track.duration) * 100);
+    $('#actual')
+        .text(toMoment(state.progressMilisseconds));
+
+    setTimeout(setUpdateTimer, 100);
+}
+
+async function voteSkip() {
+    await $.ajax({
+        type: 'POST',
+        url: `${apiUrl}Interact/Vote/Skip`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+}
+
+async function searchKeyUp(obj) {
+    let query = $('#schKey').val();
+    var searchRst = await $.ajax({
+        type: 'GET',
+        url: `${apiUrl}Search?q=${encodeURIComponent(query)}`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+
+    var list = $('#schResult');
+
+    list.empty();
+
+    for (var i = 0; i < searchRst.length; i++) {
+        let item = musicItem(searchRst[i]);
+        let add = $('<div class="Add"><i class="fa-solid fa-plus" /></>');
+        item.prepend(add);
+        list.append(item);
+        add.on('click', voteAdd)
+    }
+}
+
+async function voteAdd(event) {
+    let id = $(event.target)
+        .parent()
+        .parent()
+        .data('spotify');
+
+    modalSearch
+        .modal('hide');
+
+    await $.ajax({
+        type: 'POST',
+        url: `${apiUrl}Interact/Vote/Add?trackId=${id}`,
+        xhrFields: {
+            withCredentials: true
+        }
+    });
 }

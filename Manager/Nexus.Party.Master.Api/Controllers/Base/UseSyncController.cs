@@ -4,13 +4,15 @@ namespace Nexus.Party.Master.Api.Controllers.Base;
 
 public class UseSyncController : BaseController
 {
-    private protected readonly ISyncService SyncService;
-    private protected readonly CategorizerService CategorizerService;
+    private protected readonly CategorizerService categorizerService;
+    private protected readonly ISyncService syncService;
+    public int Connecteds
+        => interContext.Connecteds.Count();
     private protected UseSyncController(IConfiguration config, IServiceProvider serviceProvider)
         : base(config)
     {
-        SyncService = serviceProvider.GetService<ISyncService>()!;
-        CategorizerService = serviceProvider.GetService<CategorizerService>()!;
+        syncService = serviceProvider.GetService<ISyncService>()!;
+        categorizerService = serviceProvider.GetService<CategorizerService>()!;
     }
 }
 

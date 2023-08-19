@@ -21,7 +21,7 @@ builder.Services.AddCustomService<ISyncService, SyncService>();
 builder.Services.AddCustomService<CategorizerService>();
 
 var app = builder.Build();
-var confg = app.Configuration;
+var config = app.Configuration;
 
 app.UseWebSockets();
 
@@ -37,8 +37,8 @@ app.UseRouting();
 
 app.UseCors(builder =>
       builder
-          .WithOrigins(confg.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>())
-          .WithHeaders(confg.GetSection("Cors:Headers").Get<string[]>() ?? Array.Empty<string>())
+          .WithOrigins(config.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>())
+          .WithHeaders(config.GetSection("Cors:Headers").Get<string[]>() ?? Array.Empty<string>())
           .AllowAnyMethod()
           .AllowCredentials());
 

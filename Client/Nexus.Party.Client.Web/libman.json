@@ -17,6 +17,16 @@
     {
       "library": "bootstrap-slider@11.0.2",
       "destination": "wwwroot/lib/bootstrap-slider/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "moment.js@2.29.4",
+      "destination": "wwwroot/lib/moment.js/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "material-kit@3.0.3",
+      "destination": "wwwroot/lib/material-kit/"
     }
   ]
 }

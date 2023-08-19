@@ -34,7 +34,7 @@ public partial class OAuthController : BaseController
     }
 
     [HttpGet("Logout")]
-    public IActionResult Logout(bool web = true)
+    public virtual IActionResult Logout(bool web = true)
     {
         if (web)
         {
