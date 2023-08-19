@@ -11,14 +11,14 @@ namespace Nexus.Party.Master.Categorizer.Analizer;
 
 public class MusicTrainner : MusicAnalizerBase
 {
-    readonly ConcurrentDictionary<string, Trainning> results;
-    readonly List<Task> tasks;
+    private readonly ConcurrentDictionary<string, Trainning> results;
+    private readonly List<Task> downloadTasks;
 
     MultilabelSupportVectorMachine<Gaussian>? machine;
     public MusicTrainner() : base(new GenreConvert())
     {
         results = new();
-        tasks = new();
+        downloadTasks = new();
     }
     int mfccsCount = 0;
     public void AddToTrainning(Track track, string[] genres)
@@ -46,7 +46,7 @@ public class MusicTrainner : MusicAnalizerBase
 
                     results[trainning.Track.Id] = new Trainning(genreRst.ToArray(), track.Mfccs);
 
-                    Console.WriteLine($"Music id \"0{trainning.Track.Id}\" rewrite genres.");
+                    Console.WriteLine($"Music id \"{trainning.Track.Id}\" rewrite genres.");
                 }
 
                 var stream = await DownloadAsync(trainning.Track);
@@ -67,16 +67,19 @@ public class MusicTrainner : MusicAnalizerBase
             }
         }
 
-        tasks.Add(new Task(Add, new AddTrainning(track, genres)));
+        downloadTasks.Add(new Task(Add, new AddTrainning(track, genres)));
     }
 
     public async Task ProccessAsync()
     {
-        foreach (var task in tasks)
-            if (task.Status == TaskStatus.Created)
-                task.Start();
+        foreach (var tasks in SplitListIntoBatches(downloadTasks, 100))
+        {
+            foreach (var task in tasks)
+                if (task.Status == TaskStatus.Created)
+                    task.Start();
 
-        await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks);
+        }
 
         // Realize a coleta de lixo após a conclusão das tarefas
         GC.Collect();
@@ -134,7 +137,17 @@ public class MusicTrainner : MusicAnalizerBase
         }
         return genresShort;
     }
+    public static IEnumerable<IEnumerable<T>> SplitListIntoBatches<T>(IEnumerable<T> sourceList, int batchSize)
+    {
+        List<IEnumerable<T>> batches = new List<IEnumerable<T>>();
 
+        for (int i = 0; i < sourceList.Count(); i += batchSize)
+        {
+            batches.Add(sourceList.Skip(i).Take(batchSize).ToArray());
+        }
+
+        return batches.ToArray();
+    }
     // TODO: Criar módulo que evolui o modelo atual 
     #endregion
 

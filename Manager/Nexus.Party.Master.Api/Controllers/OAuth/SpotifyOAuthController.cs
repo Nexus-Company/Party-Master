@@ -26,7 +26,8 @@ public class SpotifyOAuthController : OAuthController
 
         var credential = await OAuthCredential.GetCredentialAsync(ClientId, Secret, code, Scopes);
 
-        SyncService!.SpotifyClient = new(credential);
+        SyncService!.SetClient(new(credential));
+
         State = Guid.NewGuid().ToString();
 
         return Redirect("https://localhost:44370/");

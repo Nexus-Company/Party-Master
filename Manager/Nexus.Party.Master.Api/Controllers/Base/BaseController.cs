@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Cors;
 using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal;
 using Nexus.Party.Master.Dal.Models.Accounts;
-using Nexus.Party.Master.Domain;
 using System.Net;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;

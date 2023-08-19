@@ -4,7 +4,6 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Util.Store;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal.Models.Accounts;
-using Nexus.Party.Master.Domain;
 using System.Net;
 using System.Numerics;
 

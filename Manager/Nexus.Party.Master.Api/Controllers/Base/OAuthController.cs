@@ -1,5 +1,4 @@
-﻿using Nexus.Party.Master.Domain;
-using System.Net;
+﻿using System.Net;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;
 

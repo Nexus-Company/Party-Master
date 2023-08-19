@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal;
 using Nexus.Party.Master.Dal.Models.Accounts;
 using static Nexus.Tools.Validations.Middlewares.Authentication.AuthenticationMidddleware;
 
-namespace Nexus.Party.Master.Domain;
+namespace Nexus.Party.Master.Domain.Helpers;
 
 public class AuthenticationHelper
 {

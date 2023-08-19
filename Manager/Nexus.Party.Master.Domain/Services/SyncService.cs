@@ -3,16 +3,18 @@ using Microsoft.Extensions.Logging;
 using Nexus.Spotify.Client;
 using Nexus.Spotify.Client.Models;
 
-namespace Nexus.Party.Master.Domain.Spotify;
+namespace Nexus.Party.Master.Domain.Services;
 
-public partial class SyncService : BackgroundService
+public partial class SyncService : BackgroundService, ISyncService
 {
     private readonly ILogger<SyncService> _logger;
 
-    public delegate void NewMusic(object sender, EventArgs args);
+ 
+    SpotifyClient? ISyncService.SpotifyClient { get => SpotClient; }
+    private SpotifyClient? SpotClient;
 
-    public event NewMusic? MusicChange;
-    public SpotifyClient? SpotifyClient { get; set; }
+    public event ISyncService.NewMusic? MusicChange;
+
     public Track? Track { get; private set; }
     public IEnumerable<Track> Queue { get; private set; } = Array.Empty<Track>();
     public bool Online { get; private set; }
@@ -28,7 +30,7 @@ public partial class SyncService : BackgroundService
         bool first = false;
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (SpotifyClient == null)
+            if (((ISyncService)this).SpotifyClient == null)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                 first = true;
@@ -39,7 +41,7 @@ public partial class SyncService : BackgroundService
 
             try
             {
-                var status = await SpotifyClient.GetStatusAsync(stoppingToken);
+                var status = await SpotClient.GetStatusAsync(stoppingToken);
 
                 if (status == null)
                 {
@@ -49,7 +51,7 @@ public partial class SyncService : BackgroundService
 
                 if (first && status.IsPlaying)
                 {
-                    Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
+                    Queue = await SpotClient.GetQueueAsync(stoppingToken);
                     first = false;
                 }
 
@@ -59,7 +61,7 @@ public partial class SyncService : BackgroundService
                 if (Track.Id == (status.Item?.Id ?? string.Empty))
                     continue;
 
-                Queue = await SpotifyClient.GetQueueAsync(stoppingToken);
+                Queue = await SpotClient.GetQueueAsync(stoppingToken);
 
                 MusicChange?.Invoke(status!.Item, null!);
 
@@ -85,4 +87,24 @@ public partial class SyncService : BackgroundService
 
         await base.StopAsync(cancellationToken);
     }
+
+    public void SetClient(SpotifyClient client)
+        => SpotClient = client;
+}
+
+public interface ISyncService : IHostedService
+{
+    public delegate void NewMusic(object sender, EventArgs args);
+
+    public event NewMusic? MusicChange;
+
+    internal SpotifyClient? SpotifyClient { get; }
+
+    public IEnumerable<Track> Queue { get; }
+
+    public bool Online { get; }
+
+    public Track? Track { get; }
+
+    public void SetClient(SpotifyClient client);
 }
