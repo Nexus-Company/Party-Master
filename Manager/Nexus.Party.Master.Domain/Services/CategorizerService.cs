@@ -26,7 +26,7 @@ public class CategorizerService : BackgroundService
         _logger.LogInformation("Categorizer Service is starting asynchronously.");
 
         await base.StartAsync(cancellationToken);
-    }
+        }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {

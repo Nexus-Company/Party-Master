@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 namespace Nexus.Party.Master.Domain.Helpers;
 public static class ServicesHelper
 {
-    public static IServiceCollection AddCustomService<TService>(this IServiceCollection services)
+    public static IServiceCollection AddCustomService<TService>(this IServiceCollection services) 
         where TService : BackgroundService
     {
         services = services.AddSingleton<TService>();
