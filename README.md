@@ -17,6 +17,8 @@ Para torna o público parte do ambiente todos os participantes poderam incluir s
 
 > Antes de um música ser adicionada a fila de reprodução ele será processada pela API de categorização para saber se o genêro dela está de acordo com os atuais.
 
+> O sistema pode ser configurado para definir um limite de músicas adicionadas por uma única pessoa em uma janela de 45 minutor
+
 ## Distribuição de projetos 
 
 # [Manager](Manager/)
