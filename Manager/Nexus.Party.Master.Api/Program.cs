@@ -7,7 +7,6 @@ global using Nexus.Party.Master.Domain.Services;
 global using Nexus.Tools.Validations.Middlewares.Authentication.Attributes;
 #endregion
 
-using Nexus.Party.Master.Domain;
 using Nexus.Tools.Validations.Middlewares.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);

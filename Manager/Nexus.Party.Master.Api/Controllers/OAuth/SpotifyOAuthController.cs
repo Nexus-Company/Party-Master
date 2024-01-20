@@ -8,7 +8,7 @@ namespace Nexus.Party.Master.Api.OAuth.Controllers;
 public class SpotifyOAuthController : OAuthController
 {
     private const string ConfigKey = "Spotify";
-    private const string RedirectUri = "https://localhost:44383/spotify/callback";
+    private const string RedirectUri = "https://localhost:7191/spotify/callback";
 
     public SpotifyOAuthController(IServiceProvider serviceProvider, IConfiguration config)
         : base(serviceProvider, config, ConfigKey)
@@ -24,16 +24,16 @@ public class SpotifyOAuthController : OAuthController
             state != State)
             return BadRequest();
 
-        var credential = await OAuthCredential.GetCredentialAsync(ClientId, Secret, code, Scopes);
+        var credential = await OAuthCredential.GetCredentialAsync(ClientId, Secret, code, Scopes, RedirectUri);
 
         SyncService!.SetClient(new(credential));
 
         State = Guid.NewGuid().ToString();
 
-        return Redirect("https://localhost:44370/");
+        return Redirect("http://localhost:5070/");
     }
 
     [HttpGet, Route("Authorize")]
     public IActionResult GenerateUrl()
-        => Redirect(OAuthCredential.GenerateOAuthLink(ClientId, State, Scopes));
+        => Redirect(OAuthCredential.GenerateOAuthLink(ClientId, State, Scopes, RedirectUri));
 }

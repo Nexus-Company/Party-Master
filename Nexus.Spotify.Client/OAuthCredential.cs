@@ -58,7 +58,7 @@ public class OAuthCredential
         => new(Type, Token);
 
 
-    public static async Task<OAuthCredential> GetCredentialAsync(string clientId, string secret, string code, string[] scopes)
+    public static async Task<OAuthCredential> GetCredentialAsync(string clientId, string secret, string code, string[] scopes, string? redirect_uri = null)
     {
         Exception excp = new ArgumentException("Authentication OAuth 2.0 failed.");
         using HttpClient client = new();
@@ -74,7 +74,7 @@ public class OAuthCredential
                 { "client_secret", secret },
                 { "code", code },
                 { "scope", string.Join(" ", scopes) },
-                { "redirect_uri", RedirectUri }
+                { "redirect_uri", redirect_uri ?? RedirectUri }
             })
         };
 
@@ -93,10 +93,10 @@ public class OAuthCredential
         return credential;
     }
 
-    public static string GenerateOAuthLink(string clientId, string? state, string[] scopes)
+    public static string GenerateOAuthLink(string clientId, string? state, string[] scopes, string? redirect_uri = null)
         => AccountsEndpoint +
                     $"client_id={clientId}&" +
-                    $"redirect_uri={RedirectUri}&" +
+                    $"redirect_uri={redirect_uri ?? RedirectUri}&" +
                     $"response_type=code&" +
                     $"state={state ?? string.Empty}&" +
                     $"scope={string.Join(" ", scopes)}";

@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-const apiEndPoint = 'localhost:44383/',
+const apiEndPoint = 'localhost:7191/',
     scktURl = `wss://${apiEndPoint}api/`,
     apiUrl = `https://${apiEndPoint}api/`;
 

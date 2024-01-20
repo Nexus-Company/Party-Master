@@ -14,7 +14,7 @@ namespace Nexus.Party.Master.Api.OAuth.Controllers;
 public class GoogleOAuthController : OAuthController
 {
     private const string ConfigKey = "Google";
-    public const string RedirectUri = "https://localhost:44383/google/callback";
+    public const string RedirectUri = "https://localhost:7191/google/callback";
 
     public GoogleOAuthController(IConfiguration config)
        : base(config, ConfigKey)
@@ -132,5 +132,4 @@ public static class GoogleAuthHelper
         var token = await flow.ExchangeCodeForTokenAsync(authUser, code, redirectUri, CancellationToken.None);
         return token;
     }
-
 }
