@@ -10,8 +10,12 @@ public class Authentication
     [Required]
     public string Token { get; set; }
 
+    public string? Refresh { get; set; }
+
     [Required]
     public DateTime Generated { get; set; }
+
+    public double MaxAge { get; set; }
 
     [Required]
     public Guid AccountId { get; set; }

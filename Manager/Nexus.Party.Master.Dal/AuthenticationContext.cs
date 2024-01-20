@@ -5,24 +5,26 @@ namespace Nexus.Party.Master.Dal;
 
 public class AuthenticationContext : DbContext
 {
+    public const string ConnectionName = "Authentication";
     public virtual DbSet<Account> Accounts { get; set; }
     public virtual DbSet<Authentication> Authentications { get; set; }
 
-    private readonly string ConnectionString;
+    public DbContextOptions Options { get; set; }
 
     public AuthenticationContext()
     {
-        ConnectionString = "Data Source=.\\Databases\\Authentication.db";
     }
 
-    public AuthenticationContext(string conn)
+    public AuthenticationContext(DbContextOptions options)
+        : base(options)
     {
-        ConnectionString = conn;
+        Options = options;
     }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-            optionsBuilder.UseSqlite(ConnectionString);
+        if(!optionsBuilder.IsConfigured)
+            optionsBuilder.UseSqlite();
     }
 }

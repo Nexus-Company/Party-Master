@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Nexus.Party.Master.Dal;
 using Nexus.Party.Master.Dal.Models.Accounts;
-using Nexus.Party.Master.Domain.Helpers;
 using Nexus.Party.Master.Domain.Models;
 using Nexus.Party.Master.Domain.Services;
+using Nexus.Stock.Domain.Helpers;
 
 namespace Nexus.Party.Master.Domain.Middleware;
 internal class InteractMiddleware
@@ -24,7 +24,7 @@ internal class InteractMiddleware
         _syncService = syncService;
     }
 
-    public async Task InvokeAsync(HttpContext ctx)
+    public async Task InvokeAsync(HttpContext ctx, IAuthenticationContextFactory auth)
     {
         try
         {
@@ -41,7 +41,7 @@ internal class InteractMiddleware
                 // O Serviço está offline 
             }
 
-            Account user = (await AuthenticationHelper.TryGetAccount(authCtx, ctx))!;
+            Account user = auth.Account!;
 
             int count = await interContext.Connecteds.CountAsync();
 

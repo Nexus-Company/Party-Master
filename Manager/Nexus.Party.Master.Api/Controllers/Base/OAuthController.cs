@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Nexus.Stock.Domain.Helpers;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;
 

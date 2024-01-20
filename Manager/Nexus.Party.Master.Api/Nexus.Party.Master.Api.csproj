@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>070ae6a8-8404-4699-9c52-7eae0a3e4215</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,15 +12,15 @@
     <PackageReference Include="Google.Apis.Auth.AspNetCore3" Version="1.61.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Nexus.Tools.Validations" Version="1.0.4.6" />
+    <PackageReference Include="Nexus.Tools.Validations" Version="1.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Nexus.OAuth.Libary" Version="1.0.7.4" />
+    <PackageReference Include="BCrypt.Net" Version="0.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Nexus.Party.Master.Dal\Nexus.Party.Master.Dal.csproj" />
     <ProjectReference Include="..\Nexus.Party.Master.Domain\Nexus.Party.Master.Domain.csproj" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/asmdef.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

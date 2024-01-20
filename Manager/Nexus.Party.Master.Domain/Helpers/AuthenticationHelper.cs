@@ -1,125 +1,114 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
 using Nexus.Party.Master.Dal;
-using Nexus.Party.Master.Dal.Models.Accounts;
-using static Nexus.Tools.Validations.Middlewares.Authentication.AuthenticationMidddleware;
+using Nexus.OAuth.Libary.Models;
+using Account = Nexus.Party.Master.Dal.Models.Accounts.Account;
+using Nexus.Tools.Validations.Middlewares.Authentication;
+using Nexus.OAuth.Libary;
 
-namespace Nexus.Party.Master.Domain.Helpers;
+namespace Nexus.Stock.Domain.Helpers;
 
-public class AuthenticationHelper
+public sealed class AuthenticationHelper : IAuthenticationContextFactory
 {
     public const string AuthKey = "auth_to";
-    public readonly AuthenticationContext authCtx;
+    public const string AuthorizationHeader = "Authorization";
 
-    public AuthenticationHelper(AuthenticationContext ctx)
+    #region IAuthenticationContextFactory
+
+    private Account? _acc;
+    private IEnumerable<string> _scopes = Array.Empty<string>();
+    private JwtSecurityToken? _token;
+    public Account? Account
+        => _acc;
+
+    public IEnumerable<string> Scopes
+        => _scopes;
+
+    public JwtSecurityToken? Token
+        => _token;
+
+    void IAuthenticationContextFactory.SetThis(JwtSecurityToken token, Account? acc, IEnumerable<string> scopes)
     {
-        authCtx = ctx;
+        _token = token;
+        _acc = acc;
+        _scopes = scopes;
     }
+    #endregion
 
-    /// <summary>
-    /// Api Authentication Handler Implementation
-    /// </summary>
-    /// <param name="ctx">Http Context</param>
-    /// <returns>Authentication Validation result with contains one valid authentication.</returns>
-    public async Task<AuthenticationResult> ValidAuthenticationAsync(HttpContext ctx)
+    public static async Task<AuthenticationResult> CheckAuthenticationAsync(HttpContext ctx, AuthenticationContext db, Application app)
     {
-        AuthenticationResult result = new(false, false);
-        Authentication? auth = await GetAuthenticationAsync(authCtx, ctx);
+        AuthenticationResult invalid = new(false, false);
+        string[] header;
 
-        if (auth != null)
-            return new(true, true);
-
-        return result;
-    }
-
-    private static async Task<Authentication?> GetAuthenticationAsync(AuthenticationContext dbCtx, HttpContext ctx)
-    {
-        Authentication? auth = null;
-
-        string cookie = ctx.Request.Cookies[AuthKey];
-
-        if (string.IsNullOrEmpty(cookie))
+        if (!ctx.Request.Headers.TryGetValue(AuthorizationHeader, out var value))
         {
-            cookie = ctx.Request.Headers["Authorization"].FirstOrDefault() ?? string.Empty;
-
-            try
-            {
-                cookie = cookie.Split(' ')[1];
-
-                if (string.IsNullOrWhiteSpace(cookie))
-                    return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            if(ctx.Request.Cookies.TryGetValue(AuthKey, out string cookie))
+                header = cookie.Split(' ');
+            else
+                return invalid;
         }
+        else
+            header = value.ToString().Split(' ');
 
-        auth = await (from aut in dbCtx.Authentications
-                      where aut.Token == cookie
-                      select aut).FirstOrDefaultAsync();
+        if (header.Length < 2 ||
+            string.IsNullOrWhiteSpace(header[0]) ||
+            string.IsNullOrWhiteSpace(header[1]))
+            return invalid;
 
+        if (!Enum.TryParse(typeof(TokenType), header[0]!, out object? typeObj))
+            return invalid;
 
-        return auth;
-    }
+        TokenType type = (TokenType)typeObj!;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="dbCtx"></param>
-    /// <param name="ctx"></param>
-    /// <returns></returns>
-    public static async Task<Account?> TryGetAccount(AuthenticationContext dbCtx, HttpContext ctx)
-    {
-        Authentication? auth = await GetAuthenticationAsync(dbCtx, ctx);
-        Account? account = null;
+        if (type != TokenType.Bearer)
+            return invalid;
 
-        if (auth == null)
-            return account;
-
-        account = await (from acc in dbCtx.Accounts
-                         where acc.Id == auth.AccountId
-                         select acc).FirstOrDefaultAsync();
-
-        return account;
-    }
-
-    /// <summary>
-    /// Generate Tokens with specific length
-    /// </summary>
-    /// <param name="size">Token Size</param>
-    /// <param name="lower">Use lowercase characters.</param>
-    /// <param name="upper">Use uppercase characters.</param>
-    /// <returns>New token with size value.</returns>
-    public static string GenerateToken(int size, bool upper = true, bool lower = true)
-    {
-        // ASCII characters rangers
-        byte[] lowers = "a{"u8.ToArray();
-        // Upercase latters
-        byte[] uppers = "A["u8.ToArray();
-        // ASCII numbers
-        byte[] numbers = "0:"u8.ToArray();
-
-        Random random = new();
-        string result = string.Empty;
-
-        for (int i = 0; i < size; i++)
+        try
         {
-            int type = random.Next(0, lower ? 3 : 2);
+            JwtSecurityToken token = new(header[1]);
 
-            byte[] possibles = type switch
-            {
-                1 => upper ? uppers : numbers,
-                2 => lowers,
-                _ => numbers
-            };
+            if (DateTimeOffset.FromUnixTimeSeconds(token.Payload.Exp ?? 1).ToUniversalTime() < DateTime.UtcNow ||
+                !app.VerifySignature(token))
+                return invalid;
 
-            int selected = random.Next(possibles[0], possibles[1]);
-            char character = (char)selected;
+            _ = Guid.TryParse(token.Payload["account_id"].ToString(), out Guid accId);
 
-            result += character;
+            Account account = (await (from acc in db.Accounts
+                                      where acc.Id == accId
+                                      select acc).FirstOrDefaultAsync())!;
+
+            string[] scopes = token.Payload["scopes"].ToString()!.Split(' ');
+
+            ctx.RequestServices
+                .GetRequiredService<IAuthenticationContextFactory>()
+                .SetThis(token, account, scopes);
+
+            return new AuthenticationResult(true, true, scopes);
         }
-
-        return result;
+        catch (Exception ex)
+        {
+            return invalid;
+        }
     }
+}
+
+public interface IAuthenticationContextFactory
+{
+    /// <summary>
+    /// Client Authenticated Account
+    /// </summary>
+    public Account? Account { get; }
+
+    /// <summary>
+    /// Client Authorized Scopes
+    /// </summary>
+    public IEnumerable<string> Scopes { get; }
+
+    /// <summary>
+    /// JWT Authorization Token.
+    /// </summary>
+    public JwtSecurityToken? Token { get; }
+    internal void SetThis(JwtSecurityToken? token, Account? acc, IEnumerable<string> scopes);
 }

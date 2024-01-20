@@ -3,6 +3,7 @@ using Nexus.Party.Master.Api.Models;
 using Nexus.Party.Master.Dal.Models.Interact;
 using Nexus.Party.Master.Domain.Middleware;
 using Nexus.Spotify.Client.Models;
+using Nexus.Stock.Domain.Helpers;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
@@ -16,7 +17,7 @@ public class InteractController : UseSyncController
     public delegate void Interact(object interact, EventArgs args);
     public static event Interact NewInteract;
 
-    public InteractController(IConfiguration config, IServiceProvider serviceProvider)
+    public InteractController(IConfiguration config, IServiceProvider serviceProvider, IAuthenticationContextFactory auth)
         : base(config, serviceProvider)
     {
     }

@@ -5,17 +5,27 @@ global using Nexus.Party.Master.Api.Controllers.Base;
 global using Nexus.Party.Master.Domain.Helpers;
 global using Nexus.Party.Master.Domain.Services;
 global using Nexus.Tools.Validations.Middlewares.Authentication.Attributes;
+using Microsoft.EntityFrameworkCore;
+using Nexus.OAuth.Libary;
+using Nexus.Party.Master.Dal;
+using Nexus.Stock.Domain.Helpers;
+using Nexus.Tools.Validations.Middlewares.Authentication;
 #endregion
 
-using Nexus.Tools.Validations.Middlewares.Authentication;
-
 var builder = WebApplication.CreateBuilder(args);
-var authHelper = new AuthenticationHelper(new(BaseController.AuthConnString));
+var oAuthApp = new Application(builder.Configuration["OAuth:ClientId"]!, builder.Configuration["OAuth:Secret"]!);
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AuthenticationContext>(options =>
+{
+    options.UseSqlite(@$"Data Source={AppDomain.CurrentDomain.BaseDirectory}\Databases\Authentication.db");
+});
+builder.Services.AddSingleton(oAuthApp);
+builder.Services.AddScoped<IAuthenticationContextFactory, AuthenticationHelper>();
 builder.Services.AddCustomService<ISyncService, SyncService>();
 builder.Services.AddCustomService<CategorizerService>();
 
@@ -44,7 +54,7 @@ app.UseCors(builder =>
 app.UseHttpsRedirection();
 
 // Use Nexus Middleware for control clients authentications
-app.UseAuthentication(authHelper.ValidAuthenticationAsync);
+app.UseAuthentication<AuthenticationContext, Application>(AuthenticationHelper.CheckAuthenticationAsync);
 
 app.MapControllers();
 

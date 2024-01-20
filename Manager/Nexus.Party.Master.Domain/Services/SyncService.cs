@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Nexus.Party.Master.Dal;
 using Nexus.Spotify.Client;
 using Nexus.Spotify.Client.Models;
 

@@ -7,7 +7,7 @@ public class Account
     [Key]
     public Guid Id { get; set; }
 
-    public string? GoogleId { get; set; }
+    public string? NexusId { get; set; }
 
     [Required]
     public string Name { get; set; }

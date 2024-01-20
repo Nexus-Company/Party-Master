@@ -1,4 +1,5 @@
 ﻿using Nexus.Party.Master.Domain.Services;
+using Nexus.Stock.Domain.Helpers;
 
 namespace Nexus.Party.Master.Api.Controllers.Base;
 
@@ -8,8 +9,8 @@ public class UseSyncController : BaseController
     private protected readonly ISyncService syncService;
     public int Connecteds
         => interContext.Connecteds.Count();
-    private protected UseSyncController(IConfiguration config, IServiceProvider serviceProvider)
-        : base(config)
+    private protected UseSyncController(IConfiguration config, IServiceProvider serviceProvider, IAuthenticationContextFactory? auth = null)
+        : base(config, auth: auth)
     {
         syncService = serviceProvider.GetService<ISyncService>()!;
         categorizerService = serviceProvider.GetService<CategorizerService>()!;

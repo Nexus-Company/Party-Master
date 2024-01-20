@@ -29,7 +29,7 @@ prefersDarkMode.addEventListener('change', function (e) {
 });
 
 function redirectToLogin() {
-    window.location = `https://${apiEndPoint}google/authorize`
+    window.location = `https://${apiEndPoint}nexus/authorize`
 }
 
 function redirectToLogout() {
