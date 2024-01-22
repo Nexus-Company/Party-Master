@@ -14,6 +14,9 @@ using Nexus.Tools.Validations.Middlewares.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 var oAuthApp = new Application(builder.Configuration["OAuth:ClientId"]!, builder.Configuration["OAuth:Secret"]!);
+#if DEBUG
+        Nexus.OAuth.Libary.Base.BaseClient.AllowDebug = true;
+#endif
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -32,6 +35,7 @@ builder.Services.AddCustomService<CategorizerService>();
 var app = builder.Build();
 var config = app.Configuration;
 
+oAuthApp.SetValidation(config.GetSection("OAuth:RSA").Get<string>() ?? string.Empty, true);
 app.UseWebSockets();
 
 // Configure the HTTP request pipeline.

@@ -11,8 +11,8 @@ using Nexus.Party.Master.Dal;
 namespace Nexus.Party.Master.Dal.Migrations
 {
     [DbContext(typeof(AuthenticationContext))]
-    [Migration("20240120180438_use_nexus_oauth")]
-    partial class use_nexus_oauth
+    [Migration("20240122010257_first_migration")]
+    partial class first_migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,10 @@ namespace Nexus.Party.Master.Dal.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PictureUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ShortName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

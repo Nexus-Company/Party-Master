@@ -73,11 +73,12 @@ public sealed class AuthenticationHelper : IAuthenticationContextFactory
                 !app.VerifySignature(token))
                 return invalid;
 
-            _ = Guid.TryParse(token.Payload["account_id"].ToString(), out Guid accId);
-
-            Account account = (await (from acc in db.Accounts
-                                      where acc.Id == accId
-                                      select acc).FirstOrDefaultAsync())!;
+            Account? account = await (from acc in db.Accounts
+                                      where acc.NexusId == token.Payload["account_id"].ToString()
+                                      select acc).FirstOrDefaultAsync();
+                                      
+            if(account == null)
+                return invalid;
 
             string[] scopes = token.Payload["scopes"].ToString()!.Split(' ');
 

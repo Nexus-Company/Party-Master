@@ -36,10 +36,6 @@ public class OAuthController : BaseController
         if (string.IsNullOrEmpty(code))
             return BadRequest();
 
-#if DEBUG
-        OAuth.Libary.Base.BaseClient.AllowDebug = true;
-#endif
-
         AccessToken accessToken;
 
         try
@@ -53,6 +49,9 @@ public class OAuthController : BaseController
 
         var oauthAccount = await oauthApplication.GetAccountAsync(accessToken);
 
+        // Temporary null value Error Correction
+        oauthAccount.ShortName = string.Join(' ', oauthAccount.Name.Split(' ').Take(2));
+
         Account? account = await (from acc in authCtx.Accounts
                                   where acc.NexusId == oauthAccount.Id.ToString()
                                   select acc).FirstOrDefaultAsync();
@@ -64,13 +63,15 @@ public class OAuthController : BaseController
                 Email = oauthAccount.Email,
                 Name = oauthAccount.Name,
                 NexusId = oauthAccount.Id.ToString(),
-                PictureUrl = ""
+                PictureUrl = oauthAccount.ProfileImageUrl().ToString(),
+                ShortName = oauthAccount.Name
             };
             await authCtx.Accounts.AddAsync(account);
         }
         else {
             account.Name = oauthAccount.Name;
             account.Email = oauthAccount.Email;
+            account.PictureUrl = oauthAccount.ProfileImageUrl().ToString();
         }
 
         await authCtx.SaveChangesAsync();

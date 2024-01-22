@@ -24,7 +24,6 @@ Para torna o público parte do ambiente todos os participantes poderam incluir s
 # [Manager](Manager/)
 Neste módulo do projeto está as partes referente ao gerenciamento ativo das músicas, tendo então partes como [API de gestão](Manager/Nexus.Party.Master.Api), além também das classes de contexto do [Banco de dados](Manager/Nexus.Party.Master.Dal) e por fim o projeto de [Dominio](Manager/Nexus.Party.Master.Doomain) cotnendo a lógica principal do sistema. 
 
-# [Categorizer](Categorizer/)
-O módulo de categorização contém os projetos responsáveis pelo ciclo de classificação das faixas.
+> Run dotnet ef database update --connection "Data Source=.\Databases\Authentication.db" --context AuthenticationContext --project Nexus.Party.Master.Dal
 
 # [Client](Client/)

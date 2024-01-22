@@ -17,4 +17,7 @@ public class Account
 
     [Required]
     public string PictureUrl { get; set; }
+
+    [Required]
+    public string ShortName { get; set; }
 }
